@@ -10,6 +10,8 @@ First program.
 using namespace std;
 
 int main(){
+    cout << "Hello, World!" << endl;
+    cout << "My foo is Game Development" << endl;
     return 0;
 }
 
