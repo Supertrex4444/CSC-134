@@ -12,13 +12,20 @@ using namespace std;
 int main() {
     // start prgram
     // declare all of our variables ("whiteboards")
-    string item = "shiny rock";
+    string item_name = "shiny rock";
     int    num_items = 71;
     double cost_per = 0.25;
 
-    cout << "Welcome to the " << item << " store!" << endl;
+    // Give our sales pitch
+    cout << "Welcome to The " << item_name << " store!" << endl;
+    cout << "Each " << item_name << " is $" << cost_per << endl;
+    cout << "We have " << num_items << " total." << endl;
+
     // do the processing
     double total_cost = num_items * cost_per;
+
+    //cout << "There are $" << total_cost << " dollars worth of " << item_name << "s" << endl;
+
     // end program
     return 0;
 }
