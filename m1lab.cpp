@@ -18,13 +18,20 @@ int main() {
 
     // Give our sales pitch
     cout << "Welcome to The " << item_name << " store!" << endl;
+
+    cout << "\n";
+
     cout << "Each " << item_name << " is $" << cost_per << endl;
     cout << "We have " << num_items << " total." << endl;
 
     // do the processing
     double total_cost = num_items * cost_per;
 
-    //cout << "There are $" << total_cost << " dollars worth of " << item_name << "s" << endl;
+    // Print the output
+    cout << "There are $" << total_cost << " worth of " << item_name << "s" << endl;
+    cout << "\n";
+    cout << "Thanks for shopping with us!" << endl;
+    cout << "\n";
 
     // end program
     return 0;
