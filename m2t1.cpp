@@ -14,10 +14,10 @@ int main() {
     // declare all of our variables ("whiteboards")
     string item_name = "shiny rock";
     int    num_items = 71;
-    double cost_per = 0.25;
+    double cost_per = 0.99;
     int amount_purchased;
     double total_cost = 0.0;
-
+    
     // Give our sales pitch
     cout << "Welcome to The " << item_name << " store!" << endl;
 
@@ -28,9 +28,10 @@ int main() {
     cout << endl;
     cout << "How many would you like to buy? ";
 
+    //cin = input
     cin >> amount_purchased;
     total_cost = amount_purchased * cost_per;
-    
+
     // Print the output
     cout << "You are buying " << amount_purchased << " " << item_name << endl;
     cout << "The total is: $" << total_cost << endl;
