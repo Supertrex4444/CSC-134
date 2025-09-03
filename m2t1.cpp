@@ -1,7 +1,10 @@
-// CSC 134
-// M1HW1
-// Travis Cayton
-// 9/3/2025
+/*
+CSC 134
+m2t1
+Travis Cayton
+9/3/2025
+Purpose: The "shiny rock" sales program
+*/
 
 #include <iostream>
 using namespace std;

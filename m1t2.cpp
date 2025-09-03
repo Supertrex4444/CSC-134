@@ -14,5 +14,5 @@ int main(){
     cout << first_name << last_name << endl;
     cout << "I'm enrolled in: " << enroll << endl;
     cout << "I'm an aspiring game developer" << endl;
-
+    return 0;
 }
