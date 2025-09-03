@@ -15,6 +15,8 @@ int main() {
     string item_name = "shiny rock";
     int    num_items = 71;
     double cost_per = 0.25;
+    int amount_purchased;
+    double total_cost = 0.0;
 
     // Give our sales pitch
     cout << "Welcome to The " << item_name << " store!" << endl;
@@ -23,13 +25,15 @@ int main() {
 
     cout << "Each " << item_name << " is $" << cost_per << endl;
     cout << "We have " << num_items << " total." << endl;
+    cout << endl;
+    cout << "How many would you like to buy? ";
 
-    // do the processing
-    double total_cost = num_items * cost_per;
-
+    cin >> amount_purchased;
+    total_cost = amount_purchased * cost_per;
+    
     // Print the output
-    cout << "There are $" << total_cost << " worth of " << item_name << "s" << endl;
-    cout << "\n";
+    cout << "You are buying " << amount_purchased << " " << item_name << endl;
+    cout << "The total is: $" << total_cost << endl;
     cout << "Thanks for shopping with us!" << endl;
     cout << "\n";
 
