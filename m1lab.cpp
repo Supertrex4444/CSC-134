@@ -18,7 +18,6 @@ int main() {
 
     // Give our sales pitch
     cout << "Welcome to The " << item_name << " store!" << endl;
-
     cout << "\n";
 
     cout << "Each " << item_name << " is $" << cost_per << endl;
