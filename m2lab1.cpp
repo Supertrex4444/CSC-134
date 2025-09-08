@@ -33,10 +33,10 @@ int main(){
     profit = charge-cost;
 
     cout << endl;
-    cout << "The volume of the crate is: " << volume << endl;
-    cout << "The cost of the crate is: " << cost << endl;
-    cout << "Your charge for the crate is: " << charge << endl;
-    cout << "The profit made from the crate is: " << profit << endl;
+    cout << "Your crate is: " << volume << " cubic feet." << endl;
+    cout << "Cost to Build: $" << cost << endl;
+    cout << "Customer Price: $" << charge << endl;
+    cout << "The profit made from the crate is: $" << profit << endl;
 
     
     return 0;
