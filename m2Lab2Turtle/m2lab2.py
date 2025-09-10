@@ -2,6 +2,7 @@
 """
 CSC 134
 Travis Cayton
+m2Lab2
 9/10/2025
 """
 
@@ -34,4 +35,5 @@ screen.onscreenclick(move_to_mouse)
 t.ondrag(drag_mouse)
 
 screen.mainloop()
+
 
