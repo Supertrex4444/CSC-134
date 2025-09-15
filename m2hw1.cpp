@@ -15,6 +15,7 @@ void question1(){
     int starting_balance;
     int deposit;
     int withdrawal;
+    int account_number = rand();
     cout << "Enter your name: ";
     cin >> name;
     cout << "Enter your account balance: $";
@@ -23,7 +24,15 @@ void question1(){
     cin >> deposit;
     cout << "Enter the amount you want to withdraw: $";
     cin >> withdrawal;
-
+    int balance_final = starting_balance + deposit - withdrawal;
+    cout << endl;
+    cout << "-------Account Information-------" << endl;
+    cout << endl;
+    cout << "Account Name: " << name << endl;
+    cout << "Account Number: " << account_number << endl;
+    cout << "Final Account Balance: $" << balance_final << endl;
+    cout << endl;
+    cout << "---------------------------------";
 }
 
 void question2(){
@@ -36,7 +45,7 @@ int main() {
 
     cout << "Example of printing out correct money values" << endl;
     double cost = 8.5;
-    //cout << setprecision();
+    cout << setprecision(2) << fixed;
     cout << "The  cost is: $" << cost << endl;
 
     return 0;
