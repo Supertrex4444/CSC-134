@@ -61,7 +61,7 @@ void question2(){
     cost = volume * COST_PER_CUBIC_FOOT;
     charge = volume * CHARGE_PER_CUBIC_FOOT;
     profit = charge-cost;
-
+    cout << setprecision(2) << fixed;
     cout << endl;
     cout << "Your crate is: " << volume << " cubic feet." << endl;
     cout << "Cost to Build: $" << cost << endl;
@@ -72,9 +72,6 @@ void question2(){
 int main() {
     question1();
     question2();
-    double cost = 8.5;
-    cout << setprecision(2) << fixed;
-    cout << "The  cost is: $" << cost << endl;
 
     return 0;
 }
