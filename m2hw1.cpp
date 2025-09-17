@@ -11,6 +11,7 @@ using namespace std;
 
 
 void question1(){
+    cout << endl;
     cout << "---Question 1---" << endl;
     string name;
     int starting_balance;
@@ -37,6 +38,7 @@ void question1(){
 }
 
 void question2(){
+    cout << endl;
     cout << "---Question 2---" << endl;
     const double COST_PER_CUBIC_FOOT = 0.3;
     const double CHARGE_PER_CUBIC_FOOT = 0.52;
@@ -71,6 +73,8 @@ void question2(){
 
 
 void question3(){
+    cout << endl;
+    cout << "---Question 3---" << endl;
     int pizza_count;
     int slice_count;
     int visitors;
@@ -87,9 +91,15 @@ void question3(){
 
 
 void question4(){
-    string cheer_ftcc = "Let's go FTCC";
-    string cheer_trojans = "Let's go Trojans";
-    
+    cout << endl;
+    cout << "---Question 4---" << endl;
+    string school = "FTCC";
+    string team = "Trojans";
+    string cheer = "Let's go ";
+    cout << cheer << school << endl;
+    cout << cheer << school << endl;
+    cout << cheer << school << endl;
+    cout << cheer << team << endl;
 }
 
 
