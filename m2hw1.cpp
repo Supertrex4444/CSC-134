@@ -69,9 +69,35 @@ void question2(){
     cout << "The profit made from the crate is: $" << profit << endl;
 }
 
+
+void question3(){
+    int pizza_count;
+    int slice_count;
+    int visitors;
+    int total_slices;
+    cout << "How many pizzas will you order? ";
+    cin >> pizza_count;
+    cout << "How many slices per pizza? ";
+    cin >> slice_count;
+    cout << "How many visitors will there be? ";
+    cin >> visitors;
+    total_slices = pizza_count * slice_count - visitors;
+    cout << "There are " << total_slices << " slices left." << endl;
+}
+
+
+void question4(){
+    string cheer_ftcc = "Let's go FTCC";
+    string cheer_trojans = "Let's go Trojans";
+    
+}
+
+
+
 int main() {
     question1();
     question2();
-
+    question3();
+    question4();
     return 0;
 }
