@@ -38,8 +38,8 @@ int main(){
     else {
         
         point = sum;
-        cout << "Rolled a point." << endl;
-        cout << "your point is: " << point << endl;
+        cout << "🎲 Rolled a point." << endl;
+        cout << "Your point is: " << point << endl;
     }
 }
 
