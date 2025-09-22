@@ -28,11 +28,11 @@ int main(){
     int sum = roll1+roll2;
 
     if (( sum == 7) || (sum == 11)){
-        cout << "🎲Seven or Eleven -- You win!" << endl;
+        cout << "🎲 Seven or Eleven -- You win!" << endl;
     }
 
     else if ( (sum == 2) || (sum == 3) || (sum == 12)) {
-        cout << "🎲2,3,12 -- Sorry, you lose." << endl;
+        cout << "🎲 2,3,12 -- Sorry, you lose." << endl;
     }
 
     else {
