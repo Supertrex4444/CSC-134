@@ -8,7 +8,7 @@ Travis Cayton
 #include <iostream>
 #include <cstdlib> //for rand() and srand()
 #include <stdio.h> // for time()
-//#include <stdlib.h>
+
 #include <ctime>
 using namespace std;
 
@@ -16,11 +16,11 @@ int roll();
 
 
 int main(){
-    //int num = roll();
-    //cout << num << endl;
     int roll1 = 5;
     int roll2 = 2;
     int point;
+
+    srand(time(0)); //seed RNG before roll
 
     roll1 = roll();
     roll2 = roll();
@@ -41,22 +41,12 @@ int main(){
         cout << "🎲 Rolled a point." << endl;
         cout << "Your point is: " << point << endl;
     }
+    cout << endl;
 }
 
 
 int roll() {
-    /*
-    srand(time(0));
-
-    int number1 = (rand() % 6) + 1;
-    cout << number1 << endl;
-
-    int number2 = (rand() % 6) + 1;
-    cout << number2 << endl;
-
-    int sum = number1 + number2;
-    cout << "sum is: " << sum << endl;
-    return 0;
-    */
-   return 6;
+    int my_roll;
+    my_roll = (rand() % 6) + 1;
+    return my_roll;
 }
