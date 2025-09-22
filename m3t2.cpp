@@ -6,8 +6,8 @@ Travis Cayton
 */
 
 #include <iostream>
-#include <cstdlib>
-#include <stdio.h>
+#include <cstdlib> //for rand() and srand()
+#include <stdio.h> // for time()
 //#include <stdlib.h>
 #include <ctime>
 using namespace std;
@@ -22,10 +22,10 @@ int main(){
     int roll2 = 2;
     int point;
 
-    cout << "Enter two dice (press Enter between) ";
-    cin >> roll1;
-    cin >> roll2;
+    roll1 = roll();
+    roll2 = roll();
     int sum = roll1+roll2;
+    cout << "ROLL: " << sum << endl;
 
     if (( sum == 7) || (sum == 11)){
         cout << "🎲 Seven or Eleven -- You win!" << endl;
