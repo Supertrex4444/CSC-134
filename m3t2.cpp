@@ -16,9 +16,26 @@ int roll();
 
 
 int main(){
-    int num = roll();
-    cout << num << endl;
+    //int num = roll();
+    //cout << num << endl;
+    int roll1 = 5;
+    int roll2 = 2;
+    int point;
 
+    cout << "Enter two dice (press Enter between) ";
+    cin >> roll1;
+    cin >> roll2;
+    int sum = roll1+roll2;
+
+    if (sum==7) {
+        cout << "Lucky Seven -- You win!" << endl;
+    }
+    else {
+
+        point = sum;
+        cout << "Did not roll a seven." << endl;
+        cout << "your point is: " << point << endl;
+    }
 }
 
 
