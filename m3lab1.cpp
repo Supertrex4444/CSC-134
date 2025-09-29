@@ -10,18 +10,29 @@ using namespace std;
 
 int playerHealth = 100;
 int attackDamage = 1;
+int roomNumber = 0;
 double gold = 20.0;
+string characterName = "a";
+
+string createCharacter();
+void merchantShop();
+void bossRoom();
+void casinoRoom();
+int roll();
+void townCenter();
+
 
 string createCharacter(){
-string characterName;
-cout << "Welcome to Dragon Decide!" << endl;
-cout << endl;
-cout << "Character Name: ";
-cin >> characterName;
-return characterName;
+    string characterName;
+    cout << "Welcome to Dragon Decide!" << endl;
+    cout << endl;
+    cout << "Character Name: ";
+    cin >> characterName;
+    return characterName;
 }
 
-string characterName = createCharacter();
+
+
 
 void bossRoom(){
     cout << "\n" << characterName << " arrives at the Dragon Lair." << endl;
@@ -71,6 +82,7 @@ void casinoRoom(){
     }
     if (choice == 2){
         cout << "\n" << characterName << " leaves at the Casino." << endl;
+        townCenter();
     }
 }
 int roll() {
@@ -90,7 +102,7 @@ void townCenter(){
     int choice;
     cin >> choice;
     if (choice == 1){
-        //return(merchantShop());
+        merchantShop();
     }
         
     else if (choice == 2){
@@ -153,6 +165,7 @@ void merchantShop(){
 }
 
 void gameLoop(){
+    characterName = createCharacter();
     merchantShop();
     //TODO fix 'declared in this scope' error by returning values back to gameLoop()
     //TODO add 'Dragon Lair and completion to game'
