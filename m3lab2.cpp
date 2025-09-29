@@ -16,7 +16,7 @@ void combat();
 int roll();
 
 int main(){
-    //letter_grader();
+    letter_grader();
     combat();
     return 0;
 }
