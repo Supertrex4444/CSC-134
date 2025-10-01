@@ -21,6 +21,7 @@ void bossRoom();
 void casinoRoom();
 int roll();
 void townCenter();
+void screenShift();
 
 
 string createCharacter(){
@@ -47,7 +48,7 @@ void bossRoom(){
         cout << "Dragon's Health: " << dragonHealth << endl;
         cout << endl;
         cout << "The Dragon Attacks " << characterName << "!" << endl;
-        cout << characterName << "takes " << dragonDamage << " damage!" << endl;
+        cout << characterName << " takes " << dragonDamage << " damage!" << endl;
         playerHealth = playerHealth - dragonDamage;
         cout << "==============================================" << endl;
         cout << characterName << "'s Health: " << playerHealth << endl;
@@ -57,6 +58,7 @@ void bossRoom(){
         cout << "Choice: ";
         int choice;
         cin >> choice;
+        screenShift();
         cout << endl;
         if (choice==1){
             cout << characterName << " deals " << attackDamage << " damage to the Dragon!" << endl;
@@ -72,7 +74,7 @@ void bossRoom(){
                 townCenter();
             }
             else{
-                cout << characterName << " escaped failed." << endl;
+                cout << "Escape failed!" << endl;
             }
         }
     }
@@ -116,6 +118,7 @@ void casinoRoom(){
     cout << "Choice: ";
     int choice;
     cin >> choice;
+    screenShift();
     cout << endl;
     if (choice == 1){
         srand(time(0)); //seed RNG before roll
@@ -162,6 +165,7 @@ void townCenter(){
     cout << "Choice: ";
     int choice;
     cin >> choice;
+    screenShift();
     if (choice == 1){
         merchantShop();
     }
@@ -172,6 +176,10 @@ void townCenter(){
 
     else if (choice == 3){
         bossRoom();
+    }
+    else{
+        screenShift();
+        townCenter();
     }
 }
 
@@ -187,9 +195,10 @@ void merchantShop(){
     cout << "Choice: ";
     int choice;
     cin >> choice;
+    screenShift();
     if (choice == 1){
         if (gold >= 500){
-            cout << "You purchased the Damage Increase Potion! (gained 50 Attack Damage!)";
+            cout << "You purchased the Damage Increase Potion! (gained 50 Attack Damage!)" << endl;
             attackDamage = attackDamage + 50;
             cout << "CURRENT ATTACK DAMAGE: " << attackDamage << endl;
             gold = gold - 500;
@@ -203,7 +212,7 @@ void merchantShop(){
         
     else if (choice == 2){
         if (gold >= 500){
-            cout << "You purchased the Health Increase Potion! (gained 100 Health!)";
+            cout << "You purchased the Health Increase Potion! (gained 100 Health!)" << endl;
             playerHealth = playerHealth + 100;
             cout << "CURRENT HEALTH: " << playerHealth << endl;
             gold = gold - 500;
@@ -227,10 +236,35 @@ void merchantShop(){
         cout << endl;
         merchantShop();
     }
+    else{
+        screenShift();
+        merchantShop();
+    }
+}
+
+void screenShift(){
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
 }
 
 void gameLoop(){
     characterName = createCharacter();
+    screenShift();
     merchantShop();
 }
 
