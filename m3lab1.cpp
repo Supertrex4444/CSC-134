@@ -9,6 +9,7 @@ using namespace std;
 
 
 int playerHealth = 100;
+
 int attackDamage = 1;
 int roomNumber = 0;
 double gold = 20.0;
@@ -35,7 +36,73 @@ string createCharacter(){
 
 
 void bossRoom(){
+    int dragonHealth = 10000;
+    int dragonDamage = 80;
     cout << "\n" << characterName << " arrives at the Dragon Lair." << endl;
+    cout << endl;
+    cout << characterName << " begins fighting the Dragon!" << endl;
+    cout << endl;
+    while (dragonHealth > 0 && playerHealth > 0){
+        cout << "==============================================" << endl;
+        cout << "Dragon's Health: " << dragonHealth << endl;
+        cout << endl;
+        cout << "The Dragon Attacks " << characterName << "!" << endl;
+        cout << characterName << "takes " << dragonDamage << " damage!" << endl;
+        playerHealth = playerHealth - dragonDamage;
+        cout << "==============================================" << endl;
+        cout << characterName << "'s Health: " << playerHealth << endl;
+        cout << endl;
+        cout << "1) Attack!" << endl;
+        cout << "2) Run!" << endl;
+        cout << "Choice: ";
+        int choice;
+        cin >> choice;
+        cout << endl;
+        if (choice==1){
+            cout << characterName << " deals " << attackDamage << " damage to the Dragon!" << endl;
+            dragonHealth = dragonHealth - attackDamage;
+        }
+        if (choice==2){
+            cout << characterName << " tries to run..." << endl;
+            srand(time(0)); //seed RNG before roll
+            int roll1;
+            roll1 = (rand() % 3) + 1;
+            if (roll1 == 1){
+                cout << characterName << " escaped!" << endl;
+                townCenter();
+            }
+            else{
+                cout << characterName << " escaped failed." << endl;
+            }
+        }
+    }
+    if (playerHealth <= 0){
+        cout << characterName << " has died..." << endl;
+        cout << endl;
+        cout << "===GAME OVER===" << endl;
+    }
+    if (dragonHealth <= 0){
+        cout << "The Dragon has been defeated!" << endl;
+        cout << endl;
+        cout << "===You Win!===" << endl;
+    }
+    /*
+    if (playerHealth > 110){
+        cout << characterName << "'s armor protected them from the Dragon's attack!" << endl;
+        if (attackDamage > 10){
+            cout << characterName << " attacks the dragon with their weapon!" << endl;
+            cout << endl;
+            cout << "The Dragon was Defeated!" << endl;
+            cout << endl;
+            cout << "You Win!" << endl;
+        }
+    }
+    else{
+        cout << "The Dragon attacks " << characterName << " and their lack of armor proved to be fatal." << endl;
+        cout << endl;
+        cout << "GAME OVER!" << endl;
+    }
+        */
 }
 
 void casinoRoom(){
@@ -52,30 +119,21 @@ void casinoRoom(){
     cout << endl;
     if (choice == 1){
         srand(time(0)); //seed RNG before roll
-        roll1 = (rand() % 6) + 1;
-        roll2 = (rand() % 6) + 1;
-        int sum = roll1+roll2;
+        roll1 = (rand() % 2) + 1;
+        int sum = roll1;
         cout << "ROLL: " << sum << endl;
 
-        if (( sum == 7) || (sum == 11)){
-            cout << "🎲 Seven or Eleven -- You win!" << endl;
+        if ( sum == 2){
+            cout << "🎲 2 -- You win!" << endl;
             gold = gold * 2;
             cout << "Gold: " << gold << endl;
             casinoRoom();
         }
 
-        else if ( (sum == 2) || (sum == 3) || (sum == 12)) {
-            cout << "🎲 2,3,12 -- Sorry, you lose." << endl;
+        else if ( (sum == 1) || (sum == 3) || (sum == 12)) {
+            cout << "🎲 1 -- Sorry, you lose." << endl;
             gold = gold / 2;
             cout << "Gold: " << gold << endl;
-            casinoRoom();
-        }
-
-        else {
-            
-            point = sum;
-            cout << "🎲 Rolled a point." << endl;
-            cout << "Your point is: " << point << endl;
             casinoRoom();
         }
         cout << endl;
@@ -84,10 +142,13 @@ void casinoRoom(){
         cout << "\n" << characterName << " leaves at the Casino." << endl;
         townCenter();
     }
+    else{
+        casinoRoom();
+    }
 }
 int roll() {
     int my_roll;
-    my_roll = (rand() % 6) + 1;
+    my_roll = (rand() % 2) + 1;
     return my_roll;
 }
 
@@ -117,8 +178,8 @@ void townCenter(){
 void merchantShop(){
     cout << "\n" << characterName << " stands in front of a Merchant." << endl;
     cout << endl;
-    cout << "1. Try to purchase $500 Fiery Greatsword " << endl;
-    cout << "2. Try to purchase $500 Dragonscale Armor " << endl;
+    cout << "1. Try to purchase $500 Damage Increase Potion " << endl;
+    cout << "2. Try to purchase $500 Health Increase Potion " << endl;
     cout << "3. Return to Town Center" << endl;
     cout << "4. Beg the merchant for 'Free Stuff'" << endl;
     cout << "CURRENT GOLD: " << gold << endl;
@@ -128,27 +189,29 @@ void merchantShop(){
     cin >> choice;
     if (choice == 1){
         if (gold >= 500){
-            cout << "You purchased the Fiery Greatsword! (gained 50 Attack Damage!)";
+            cout << "You purchased the Damage Increase Potion! (gained 50 Attack Damage!)";
             attackDamage = attackDamage + 50;
+            cout << "CURRENT ATTACK DAMAGE: " << attackDamage << endl;
             gold = gold - 500;
             merchantShop();
         }
         else if ((gold < 500)){
-            cout << "Merchant: You cant afford a Fiery Greatsword!";
+            cout << "Merchant: You cant afford a Damage Increase Potion!";
             merchantShop();
         }
     }
         
     else if (choice == 2){
         if (gold >= 500){
-            cout << "You purchased the Dragonscale Armor! (gained 100 Health!)";
+            cout << "You purchased the Health Increase Potion! (gained 100 Health!)";
             playerHealth = playerHealth + 100;
+            cout << "CURRENT HEALTH: " << playerHealth << endl;
             gold = gold - 500;
             merchantShop();
         }
 
-        else if ((gold < 650)){
-            cout << "Merchant: You cant afford Dragonscale Armor!";
+        else if ((gold < 500)){
+            cout << "Merchant: You cant afford a Health Increase Potion!";
             merchantShop();
         }
     }
@@ -169,9 +232,6 @@ void merchantShop(){
 void gameLoop(){
     characterName = createCharacter();
     merchantShop();
-    //TODO fix 'declared in this scope' error by returning values back to gameLoop()
-    //TODO add 'Dragon Lair and completion to game'
-    //TODO show gold during shop
 }
 
 int main() {
