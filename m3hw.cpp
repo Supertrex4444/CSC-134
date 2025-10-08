@@ -7,6 +7,8 @@
 using namespace std;
 
 int main() {
+
+
     cout << endl;
     cout << "--Question 1--" << endl;
     cout << "Hello, I’m a C++ program!" << endl;
@@ -52,7 +54,8 @@ int main() {
     cout << "---Costs---" << endl;
     cout << endl;
 
-
+    string path;
+    string option;
     // Print the results
     cout << "Cost of meals: $" << cost << endl;
     cout << endl;
@@ -72,10 +75,56 @@ int main() {
     cout << "The path on the right leads into a dark and gloomy forest." << endl;
     cout << endl;
     cout << "Enter 1 to go left, or 2 to go right: ";
-    cin >> 
-
-
+    cin >> path;
+    cout << endl;
+    cout << endl;
+    if (path == "1"){
+        cout << endl;
+        cout << "You enter the bright and sunny field." << endl;
+        cout << "Unfortunately it was too sunny and you were sunburnt." << endl;
+        cout << "GAME OVER" << endl;
+    }
+    else if (path == "2"){
+        cout << endl;
+        cout << "You enter the dark and gloomy forest." << endl;
+        cout << "You see a light up ahead." << endl;
+        cout << "Enter 1 to go towards the light, or 2 to go the opposite way: ";
+        cin >> option;
+        cout << endl;
+        cout << endl;
+        if (option == "1"){
+            cout << "You go towards the light." << endl;
+            cout << "The source of this light was a campfire, a skeleton sat nearby roasting a marshmallow for s'mores." << endl;
+            cout << endl;
+            cout << "You sat around the campfire with the skeleton and ate s'mores with it." << endl;
+            cout << "YOU WIN!" << endl;
+        }
+        if (option == "2"){
+            cout << "You decide to not go towards the light and instead just leave." << endl;
+            cout << "On your way out, however, you tripped on a branch." << endl;
+            cout << "GAME OVER" << endl;
+        }
+    }
+    else{
+        cout << "Rather than going down either path, you instead just turn around and leave.";
+    }
+    srand(time(0)); //seed RNG before roll
+    int answer;
+    cout << endl;
+    cout << endl;
     cout << endl;
     cout << "--Question 4--" << endl;
+    int number1 = (rand() % 9) + 1;
+    cout << number1 << endl;
+    int number2 = (rand() % 9) + 1;
+    cout << number2 << endl;
+    cout << "What is " << number1 << " plus " << number2 << "?" << endl;
+    cin >> answer;
+    if (answer == number1 + number2) {
+        cout << "Correct!" << endl;
+    }
+    else {
+        cout << "Incorrect." << endl;
+    }
     return 0;
 }
