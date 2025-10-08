@@ -2,13 +2,12 @@
 // M3HW
 // Travis Cayton
 // 10/08/2025
+// Gold
 
 #include <iostream>
 using namespace std;
 
 int main() {
-
-
     cout << endl;
     cout << "--Question 1--" << endl;
     cout << "Hello, I’m a C++ program!" << endl;
