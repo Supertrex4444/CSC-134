@@ -1,0 +1,190 @@
+:: StoryTitle
+Dragon Decide!
+
+
+:: StoryData
+{
+  "ifid": "A4C9B470-3889-43E0-985E-786884F69B88",
+  "format": "SugarCube",
+  "format-version": "2.37.3",
+  "start": "Character Creation",
+  "zoom": 1
+}
+
+
+:: Boss Attack {"position":"100,500","size":"100,100"}
+/* Player action: Damage the dragon, then return to combat passage */
+$characterName strikes the colossal beast! $characterName deals $attackDamage damage to the Dragon!
+<<set $dragonHealth -= $attackDamage>>
+[[Continue Fight|Boss Combat]]
+
+
+:: Boss Combat {"position":"300,200","size":"100,100"}
+/* Twine Combat Loop: Check victory/defeat first, then run turn, then present choices */
+
+<<if $playerHealth lte 0>>
+	[[Your health dropped to 0...|Game Over]]
+<<elseif $dragonHealth lte 0>>
+	[[The Dragon has been defeated!|You Win]]
+<<else>>
+	/* DRAGON TURN */
+	Dragon's Health: $dragonHealth
+	
+	The Dragon Attacks $characterName!
+	$characterName takes $dragonDamage damage!
+	<<set $playerHealth -= $dragonDamage>>
+	
+	/* PLAYER STATUS */
+	$characterName's Health: $playerHealth
+	
+	/* PLAYER CHOICE */
+	What do you do next?
+	* [[Attack! (Deal $attackDamage damage)|Boss Attack]]
+	* [[Run! (1 in 3 chance of escape)|Boss Run]]
+<</if>>
+
+
+:: Boss Room {"position":"1025,150","size":"100,100"}
+/* Initialize the Dragon's health locally, as it resets every time the player enters the Boss Room */
+<<set $dragonHealth to 10000>>
+<<set $dragonDamage to 80>>
+
+$characterName arrives at the Dragon Lair.
+The air is thick with smoke and the smell of sulfur.
+$characterName begins fighting the Dragon!
+
+[[Begin Combat|Boss Combat]]
+
+
+:: Boss Run {"position":"325,475","size":"100,100"}
+/* Player action: Attempt escape, determine success, and redirect */
+$characterName tries to turn tail and run...
+<<set _roll to random(1, 3)>>
+
+<<if _roll is 1>>
+	$characterName escaped! You flee back to the Town Center.
+	[[Return to Town Center|Town Center]]
+<<else>>
+	Escape failed! The Dragon roars and blocks your path.
+	[[Continue Fight|Boss Combat]]
+<</if>>
+
+
+:: Casino Gamble {"position":"1025,25","size":"100,100"}
+<<set _roll to random(1, 2)>>
+You cast the magic die...
+
+<<if _roll is 2>>
+	<<set $gold *= 2>>
+	🎲 2 -- You win! Your gold is doubled.
+	New Gold: $gold
+	[[Gamble again|Casino Room]]
+<<else>>
+	<<set $gold /= 2>>
+	🎲 1 -- Sorry, you lose. Half your gold slips away.
+	New Gold: $gold
+	[[Gamble again|Casino Room]]
+<</if>>
+
+
+:: Casino Room {"position":"900,25","size":"100,100"}
+$characterName enters the shady Casino. The dice are rolling and the gold is clinking.
+
+CURRENT GOLD: $gold
+
+What do you want to do?
+1. [[Gamble! (50/50 chance to double or halve your gold)|Casino Gamble]]
+2. [[Quit while you're ahead|Town Center]]
+
+
+:: Character Creation {"position":"1200,325","size":"100,100"}
+Welcome to Dragon Decide!
+
+Please enter your character's name:
+<<textbox "$characterName" $characterName "Town Center">>
+
+
+:: Game Over {"position":"1000,550","size":"100,100"}
+<center>
+	<h1>$characterName has died...</h1>
+	<p>Your valiant, but ultimately doomed, adventure has come to an end.</p>
+	<h2>===GAME OVER===</h2>
+	[[Start Over|Character Creation]]
+</center>
+
+
+:: Merchant Beg {"position":"750,75","size":"100,100"}
+$characterName begs the Merchant for a handout.
+
+The Merchant sighs and looks away. "No free stuff, kid." $characterName feels awkward and slightly embarrassed.
+[[Continue|Merchant Shop]]
+
+
+:: Merchant Damage Purchase {"position":"525,25","size":"100,100"}
+<<if $gold gte 500>>
+	<<set $gold -= 500>>
+	<<set $attackDamage += 50>>
+	You purchased the Damage Increase Potion! You are stronger!
+	CURRENT ATTACK DAMAGE: $attackDamage
+	CURRENT GOLD: $gold
+	[[Continue|Merchant Shop]]
+<<else>>
+	Merchant: You can't afford a Damage Increase Potion! Come back when you're richer.
+	[[Continue|Merchant Shop]]
+<</if>>
+
+
+:: Merchant Health Purchase {"position":"575,150","size":"100,100"}
+<<if $gold gte 500>>
+	<<set $gold -= 500>>
+	<<set $playerHealth += 100>>
+	You purchased the Health Increase Potion! You feel robust!
+	CURRENT HEALTH: $playerHealth
+	CURRENT GOLD: $gold
+	[[Continue|Merchant Shop]]
+<<else>>
+	Merchant: You can't afford a Health Increase Potion! Come back when you're richer.
+	[[Continue|Merchant Shop]]
+<</if>>
+
+
+:: Merchant Shop {"position":"525,400","size":"100,100"}
+$characterName stands in front of a Merchant.
+
+The Merchant eyes your coin purse. CURRENT GOLD: $gold
+
+1. [[Try to purchase $500 Damage Increase Potion (+$50 Attack Damage)|Merchant Damage Purchase]]
+2. [[Try to purchase $500 Health Increase Potion (+$100 Health)|Merchant Health Purchase]]
+3. [[Return to Town Center|Town Center]]
+4. [[Beg the merchant for 'Free Stuff'|Merchant Beg]]
+
+
+:: StoryInit {"position":"75,175","size":"100,100"}
+/*
+Initialize global game variables.
+These variables start the game at the defined state and persist throughout.
+*/
+<<set $playerHealth to 100>>
+<<set $attackDamage to 1>>
+<<set $gold to 20.0>>
+/* Initial value "a" is set to match the C++ default, but we'll ask the user to input a name. */
+<<set $characterName to "a">>
+
+
+:: Town Center {"position":"800,250","size":"100,100"}
+
+$characterName arrives at The Town Center.
+
+	Where would you like to go?
+	* [[Go to Merchant's Shop|Merchant Shop]]
+	* [[Go to Casino|Casino Room]]
+	* [[Travel to Dragon's Lair|Boss Room]]
+
+
+:: You Win {"position":"725,500","size":"100,100"}
+<center>
+	<h1>The Dragon has been defeated!</h1>
+	<p>You have saved the realm and claimed untold glory and riches!</p>
+	<h2>===You Win!===</h2>
+	[[Start Over|Character Creation]]
+</center>
