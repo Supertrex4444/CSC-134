@@ -2,38 +2,75 @@ import pygame
 import random
 import time
 import math
-import os # Kept 'os' but it's no longer strictly needed for font checks
+import os
 
 # --- 1. CORE DATA CLASSES ---
 
+# Global Type Effectiveness Table (Simplified Rock-Paper-Scissors)
+# ATTACKING TYPE: {DEFENDING TYPE: MODIFIER}
+TYPE_EFFECTIVENESS = {
+    "FIRE": {"GRASS": 2.0, "WATER": 0.5, "FIRE": 1.0},
+    "WATER": {"FIRE": 2.0, "GRASS": 0.5, "WATER": 1.0},
+    "GRASS": {"WATER": 2.0, "FIRE": 0.5, "GRASS": 1.0},
+    # Generic/Normal type for simplicity, neutral against all
+    "NORMAL": {"FIRE": 1.0, "WATER": 1.0, "GRASS": 1.0, "NORMAL": 1.0}
+}
+
 class Ability:
-    """Represents a Pokémon ability with a name and base power."""
-    def __init__(self, name, base_power):
+    """Represents a Pokémon ability with a name, base power, and a type."""
+    def __init__(self, name, base_power, type):
         self.name = name
         self.base_power = base_power
+        self.type = type # e.g., "FIRE", "WATER", "GRASS", "NORMAL"
 
 class Pokemon:
-    """Represents a combatant with stats and abilities."""
-    # Removed the 'emoji' attribute
-    def __init__(self, name, hp, attack, defense, abilities, color=None, is_player=False):
+    """Represents a combatant with stats, abilities, and a type."""
+    def __init__(self, name, hp, attack, defense, abilities, type, color=None, is_player=False):
         self.name = name
         self.max_hp = hp
         self.current_hp = hp
         self.attack = attack
         self.defense = defense
         self.abilities = abilities
+        self.type = type # Store the Pokemon's type (e.g., "FIRE")
         self.is_player = is_player
         self.color = color if color else (100, 100, 100)
-        # We will determine the drawing function based on the name/type, not an attribute
 
     def is_alive(self):
         return self.current_hp > 0
 
     def calculate_damage(self, target, ability):
-        modifier = random.uniform(0.85, 1.0)
+        """
+        Calculates damage, incorporates Critical Hit and Type Effectiveness.
+        Returns: (damage, effectiveness_text, is_crit)
+        """
+        # 1. Base Damage Formula
         damage = math.floor(((ability.base_power * self.attack) / target.defense) / 5 + 2)
-        final_damage = math.floor(damage * modifier)
-        return max(1, final_damage)
+
+        # 2. Critical Hit Check (1 in 16 chance)
+        is_crit = random.randint(1, 16) == 1 
+        crit_mod = 1.5 if is_crit else 1.0
+
+        # 3. Type Effectiveness
+        type_mod = TYPE_EFFECTIVENESS.get(ability.type, {}).get(target.type, 1.0)
+        
+        # 4. Random Modifier (Damage fluctuation)
+        random_mod = random.uniform(0.85, 1.0) 
+
+        # 5. Final Damage Calculation
+        final_damage = math.floor(damage * crit_mod * type_mod * random_mod)
+        final_damage = max(1, final_damage) # Minimum 1 damage
+
+        # 6. Generate Effectiveness Dialogue
+        effectiveness_text = ""
+        if type_mod > 1.0:
+            effectiveness_text = "It was **super effective**!"
+        elif type_mod < 1.0 and type_mod > 0:
+            effectiveness_text = "It was **not very effective**..."
+        elif type_mod == 0:
+            effectiveness_text = "It had **no effect**!"
+        
+        return (final_damage, effectiveness_text, is_crit)
 
     def take_damage(self, damage):
         self.current_hp -= damage
@@ -45,29 +82,29 @@ class Pokemon:
 
 # --- 2. GAME SETUP (PRE-PYGAME USER INPUT & DATA) ---
 
-# Define a color for each starter
+# Define a color and TYPE for each starter
 PYRON_COLOR = (255, 100, 50)
 HYDROC_COLOR = (50, 150, 255)
 TERRA_COLOR = (100, 200, 50)
-ENEMY_COLOR = (150, 50, 150) # A fixed, sinister enemy color
+ENEMY_COLOR = (150, 50, 150)
 
-# Define the starter Pokémon data (removed "emoji" field)
+# Define the starter Pokémon data (with Type and typed abilities)
 STARTER_DATA = {
     "Pyron": {
         "stats": (100, 55, 40),
-        "abilities": [Ability("Ember", 40), Ability("Fire Blast", 70)],
+        "abilities": [Ability("Ember", 40, "FIRE"), Ability("Fire Blast", 70, "FIRE")],
         "color": PYRON_COLOR,
-        "type": "FIRE" # Added a "type" field for drawing logic
+        "type": "FIRE" 
     },
     "Hydroc": {
         "stats": (110, 45, 50),
-        "abilities": [Ability("Bubble", 40), Ability("Hydro Pump", 70)],
+        "abilities": [Ability("Bubble", 40, "WATER"), Ability("Hydro Pump", 70, "WATER")],
         "color": HYDROC_COLOR,
         "type": "WATER"
     },
     "Terra": {
         "stats": (95, 60, 35),
-        "abilities": [Ability("Vine Whip", 40), Ability("Earthquake", 70)],
+        "abilities": [Ability("Vine Whip", 40, "GRASS"), Ability("Earthquake", 70, "GRASS")],
         "color": TERRA_COLOR,
         "type": "GRASS"
     }
@@ -77,20 +114,26 @@ def generate_enemy_pokemon():
     """Randomly generates an enemy Pokémon."""
     
     enemy_names = ["Venoshock", "Gloomfang", "Hydrocoil", "Aerochime", "Sablelash"]
+    
+    # Assign a random type to the enemy (Normal for now, to be neutral)
+    enemy_type = "NORMAL" 
+    
+    # Create random abilities, assign them the enemy's type or Normal
     enemy_abilities = [
-        Ability("Scratch", random.randint(30, 40)),
-        Ability("Tackle", random.randint(40, 50)),
-        Ability("Roar", random.randint(45, 60)),
-        Ability("Swipe", random.randint(50, 70))
+        Ability("Scratch", random.randint(30, 40), "NORMAL"),
+        Ability("Tackle", random.randint(40, 50), "NORMAL"),
+        Ability("Roar", random.randint(45, 60), "NORMAL"),
+        Ability("Swipe", random.randint(50, 70), "NORMAL")
     ]
     
     name = random.choice(enemy_names)
     hp = random.randint(90, 110) 
     attack = random.randint(45, 55)
     defense = random.randint(35, 45)
+    
     abilities = random.sample(enemy_abilities, 2)
     
-    return Pokemon(name, hp, attack, defense, abilities, color=ENEMY_COLOR) # Fixed enemy color
+    return Pokemon(name, hp, attack, defense, abilities, type=enemy_type, color=ENEMY_COLOR)
 
 # Global variables for Pokémon data
 PLAYER_POKEMON = None 
@@ -115,9 +158,9 @@ BLUE = (50, 50, 150)
 YELLOW = (255, 215, 0)
 GRAY = (50, 50, 50)
 LIGHT_GRAY = (200, 200, 200)
-RED = (200, 50, 50) # Re-add red for effects
+RED = (200, 50, 50)
 
-# Fonts (Revert to standard fonts, no more emoji-specific fonts)
+# Fonts 
 FONT_LG = pygame.font.Font(None, 96) 
 FONT_MD = pygame.font.Font(None, 64) 
 FONT_SM = pygame.font.Font(None, 48) 
@@ -183,7 +226,6 @@ btn_w, btn_h = 250, 120
 start_x = SCREEN_WIDTH // 2 - (btn_w * 3 + 100) // 2 
 for i, name in enumerate(starter_names):
     x = start_x + (btn_w + 50) * i
-    # Use starter's specific color for the button
     btn = Button(x, SCREEN_HEIGHT // 2, btn_w, btn_h, name, STARTER_DATA[name]["color"], None) 
     menu_buttons.append(btn)
     
@@ -235,12 +277,7 @@ def draw_terra(screen, center_x, center_y, color, size):
     # Body (Circle)
     pygame.draw.circle(screen, color, (center_x, center_y + int(radius * 0.2)), int(radius))
     
-    # Leaf (Rotated rectangle)
-    leaf_rect = pygame.Rect(0, 0, radius * 1.5, radius * 0.4)
-    leaf_rect.center = (center_x, center_y - radius * 0.8)
-    
-    # We use transform.rotate for the leaf effect, though Pygame font is simple
-    # For a simple solution, we just draw a green circle/small triangle on top
+    # Leaf (Green circle on top)
     pygame.draw.circle(screen, (150, 255, 100), (center_x, center_y - int(radius)), int(radius * 0.4))
     
     # Border
@@ -298,7 +335,6 @@ def get_drawing_function(pokemon_name):
     elif pokemon_name == "Terra":
         return draw_terra
     else:
-        # Enemy names are random, so we rely on the type logic below or use the enemy default
         return draw_enemy
         
 
@@ -311,20 +347,15 @@ def draw_battle_interface(screen):
     pygame.draw.rect(screen, (220, 220, 255), (0, 0, SCREEN_WIDTH, int(SCREEN_HEIGHT * 0.6))) 
     pygame.draw.rect(screen, (150, 255, 150), (0, int(SCREEN_HEIGHT * 0.6), SCREEN_WIDTH, int(SCREEN_HEIGHT * 0.4))) 
     
-    SPRITE_SIZE_BATTLE = 150 # Radius/Scale for large sprites
+    SPRITE_SIZE_BATTLE = 150
     
     if PLAYER_POKEMON and ENEMY_POKEMON:
         
         # --- Draw Pokémon Sprites ---
-        
-        # Enemy Pokémon (Top Right)
         enemy_x, enemy_y = SCREEN_WIDTH * 0.75, SCREEN_HEIGHT * 0.25
-        # Enemy always uses the generic enemy drawing function
         draw_enemy(screen, int(enemy_x), int(enemy_y), ENEMY_POKEMON.color, SPRITE_SIZE_BATTLE)
         
-        # Player Pokémon (Bottom Left)
         player_x, player_y = SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.55
-        # Player uses the function specific to their starter type
         player_draw_func = get_drawing_function(PLAYER_POKEMON.name)
         player_draw_func(screen, int(player_x), int(player_y), PLAYER_POKEMON.color, SPRITE_SIZE_BATTLE)
         
@@ -335,7 +366,7 @@ def draw_battle_interface(screen):
                     PLAYER_POKEMON.name, PLAYER_POKEMON.current_hp, PLAYER_POKEMON.max_hp, True)
 
     # 3. Message/Action Box 
-    box_height = 100
+    box_height = 100 
     box_width = SCREEN_WIDTH // 2 - 50 
     box_x = 50
     box_y = SCREEN_HEIGHT - box_height - 60
@@ -344,8 +375,33 @@ def draw_battle_interface(screen):
     #pygame.draw.rect(screen, YELLOW, box_rect, border_radius=20)
     #pygame.draw.rect(screen, BLACK, box_rect, 5, border_radius=20) 
     
-    message_surface = FONT_MD.render(GAME_MESSAGE, True, BLACK)
-    screen.blit(message_surface, (box_x + 20, box_y + 20))
+    # NEW: Render the message, splitting it for the second line if needed
+    message_lines = GAME_MESSAGE.split("\n")
+    
+    # Line 1
+    message_surface1 = FONT_MD.render(message_lines[0].replace('**', ''), True, BLACK)
+    screen.blit(message_surface1, (box_x + 20, box_y + 20))
+    
+    # Line 2 (if it exists)
+    if len(message_lines) > 1:
+        # Check for bold formatting (simple text replacement for visual effect)
+        text_to_render = message_lines[1]
+        
+        if "**super effective**" in text_to_render:
+             color = (0, 100, 0) # Dark Green for SUPER EFFECTIVE
+        elif "**not very effective**" in text_to_render:
+             color = (150, 0, 0) # Dark Red for NOT VERY EFFECTIVE
+        elif "**critical hit**" in text_to_render:
+             color = (255, 165, 0) # Orange for CRITICAL HIT
+        else:
+             color = BLACK
+        
+        # Remove markdown bolding for display
+        text_to_render = text_to_render.replace('**', '')
+
+        message_surface2 = FONT_MD.render(text_to_render, True, color)
+        screen.blit(message_surface2, (box_x + 20, box_y + 80))
+        
 
     # 4. Action Buttons 
     if GAME_STATE == 0:
@@ -373,7 +429,7 @@ def draw_battle_interface(screen):
         quit_rect = quit_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100))
         screen.blit(quit_text, quit_rect)
 
-# --- STARTER MENU LOGIC AND RENDERING ---
+# --- STARTER MENU LOGIC AND RENDERING (No change) ---
 
 def draw_starter_menu(screen, input_active):
     """Draws the starter selection and naming interface with manual sprites."""
@@ -441,32 +497,63 @@ def draw_starter_menu(screen, input_active):
     
     return None 
 
-# --- 6. GAME LOGIC & 7. MAIN GAME LOOP (No functional changes) ---
+# --- 6. GAME LOGIC (TURNS) ---
 
 def handle_player_turn(clicked_ability):
+    """Executes the player's move and transitions to the enemy turn."""
     global GAME_STATE, GAME_MESSAGE
+
     ability = clicked_ability 
-    damage = PLAYER_POKEMON.calculate_damage(ENEMY_POKEMON, ability)
+    
+    # Calculate damage and get battle messages
+    damage, effectiveness_text, is_crit = PLAYER_POKEMON.calculate_damage(ENEMY_POKEMON, ability)
     ENEMY_POKEMON.take_damage(damage)
-    GAME_MESSAGE = f"{PLAYER_POKEMON.name} used {ability.name}, dealing {damage} damage!"
+
+    # Construct the rich dialogue string, separated by a newline
+    dialogue = f"{PLAYER_POKEMON.name} used {ability.name}!\n"
+    
+    if is_crit:
+        dialogue += "A **critical hit**! "
+    
+    dialogue += effectiveness_text
+    
+    GAME_MESSAGE = dialogue
+    
     if not ENEMY_POKEMON.is_alive():
         GAME_STATE = 2 
     else:
         GAME_STATE = 1 
         
 def handle_enemy_turn():
+    """Executes the enemy's move and transitions back to player turn."""
     global GAME_STATE, GAME_MESSAGE
+    
     pygame.time.wait(1000) 
+    
     ability = random.choice(ENEMY_POKEMON.abilities)
-    damage = ENEMY_POKEMON.calculate_damage(PLAYER_POKEMON, ability)
+    
+    # Calculate damage and get battle messages
+    damage, effectiveness_text, is_crit = ENEMY_POKEMON.calculate_damage(PLAYER_POKEMON, ability)
     PLAYER_POKEMON.take_damage(damage)
-    GAME_MESSAGE = f"{ENEMY_POKEMON.name} used {ability.name}, dealing {damage} damage!"
+
+    # Construct the rich dialogue string, separated by a newline
+    dialogue = f"{ENEMY_POKEMON.name} used {ability.name}!\n"
+    
+    if is_crit:
+        dialogue += "A **critical hit**! "
+    
+    dialogue += effectiveness_text
+    
+    GAME_MESSAGE = dialogue
+    
     if not PLAYER_POKEMON.is_alive():
         GAME_STATE = 2 
     else:
         pygame.time.wait(1500) 
         GAME_STATE = 0 
         GAME_MESSAGE = f"What will {PLAYER_POKEMON.name} do?"
+
+# --- 7. MAIN GAME LOOP (No functional change) ---
 
 def main_game_loop():
     global GAME_STATE, GAME_MESSAGE, PLAYER_POKEMON, ENEMY_POKEMON, player_name_input, ABILITY_BUTTONS
@@ -502,8 +589,9 @@ def main_game_loop():
                             stats = selected_starter_data["stats"]
                             abilities = selected_starter_data["abilities"]
                             color = selected_starter_data["color"]
+                            type = selected_starter_data["type"] # Pass the type
                             PLAYER_POKEMON = Pokemon(
-                                player_name_input, stats[0], stats[1], stats[2], abilities, color=color, is_player=True
+                                player_name_input, stats[0], stats[1], stats[2], abilities, type=type, color=color, is_player=True
                             )
                             ENEMY_POKEMON = generate_enemy_pokemon()
                             ABILITY_BUTTONS = create_ability_buttons(PLAYER_POKEMON)
@@ -518,8 +606,9 @@ def main_game_loop():
                                 stats = selected_starter_data["stats"]
                                 abilities = selected_starter_data["abilities"]
                                 color = selected_starter_data["color"]
+                                type = selected_starter_data["type"] # Pass the type
                                 PLAYER_POKEMON = Pokemon(
-                                    player_name_input, stats[0], stats[1], stats[2], abilities, color=color, is_player=True
+                                    player_name_input, stats[0], stats[1], stats[2], abilities, type=type, color=color, is_player=True
                                 )
                                 ENEMY_POKEMON = generate_enemy_pokemon()
                                 ABILITY_BUTTONS = create_ability_buttons(PLAYER_POKEMON)

@@ -1,0 +1,15 @@
+I'm a c++ student looking to create a Python pygame that includes a Pokemon battle where the player names their pokemon and their abilities with randomized enemy names and ability damage.
+
+
+
+You are an expert at pygame who will help me plan, write, and learn the code necessary to create this game.
+
+
+
+
+
+Implement a menu where I can pick from three starter pokemon and then name it before the first battle.
+
+
+
+This works well, now I want to make the window resolution 1920x1080, Next thing we should do is space out the GUI more to prevent overlapping.
