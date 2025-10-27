@@ -2,6 +2,7 @@ import pygame
 import random
 import time
 import math
+import os # Kept 'os' but it's no longer strictly needed for font checks
 
 # --- 1. CORE DATA CLASSES ---
 
@@ -13,7 +14,8 @@ class Ability:
 
 class Pokemon:
     """Represents a combatant with stats and abilities."""
-    def __init__(self, name, hp, attack, defense, abilities, color=None, emoji="❓", is_player=False):
+    # Removed the 'emoji' attribute
+    def __init__(self, name, hp, attack, defense, abilities, color=None, is_player=False):
         self.name = name
         self.max_hp = hp
         self.current_hp = hp
@@ -22,8 +24,7 @@ class Pokemon:
         self.abilities = abilities
         self.is_player = is_player
         self.color = color if color else (100, 100, 100)
-        # NEW: Store the emoji string
-        self.emoji = emoji
+        # We will determine the drawing function based on the name/type, not an attribute
 
     def is_alive(self):
         return self.current_hp > 0
@@ -44,30 +45,31 @@ class Pokemon:
 
 # --- 2. GAME SETUP (PRE-PYGAME USER INPUT & DATA) ---
 
-# Define a color and emoji for each starter
+# Define a color for each starter
 PYRON_COLOR = (255, 100, 50)
 HYDROC_COLOR = (50, 150, 255)
 TERRA_COLOR = (100, 200, 50)
+ENEMY_COLOR = (150, 50, 150) # A fixed, sinister enemy color
 
-# Define the starter Pokémon data
+# Define the starter Pokémon data (removed "emoji" field)
 STARTER_DATA = {
     "Pyron": {
         "stats": (100, 55, 40),
         "abilities": [Ability("Ember", 40), Ability("Fire Blast", 70)],
         "color": PYRON_COLOR,
-        "emoji": "🔥"
+        "type": "FIRE" # Added a "type" field for drawing logic
     },
     "Hydroc": {
         "stats": (110, 45, 50),
         "abilities": [Ability("Bubble", 40), Ability("Hydro Pump", 70)],
         "color": HYDROC_COLOR,
-        "emoji": "💧"
+        "type": "WATER"
     },
     "Terra": {
         "stats": (95, 60, 35),
         "abilities": [Ability("Vine Whip", 40), Ability("Earthquake", 70)],
         "color": TERRA_COLOR,
-        "emoji": "🌿"
+        "type": "GRASS"
     }
 }
 
@@ -86,18 +88,15 @@ def generate_enemy_pokemon():
     hp = random.randint(90, 110) 
     attack = random.randint(45, 55)
     defense = random.randint(35, 45)
-    
     abilities = random.sample(enemy_abilities, 2)
-    enemy_color = (random.randint(150, 200), random.randint(150, 200), random.randint(150, 200))
     
-    # Assign the enemy emoji
-    return Pokemon(name, hp, attack, defense, abilities, color=enemy_color, emoji="😈")
+    return Pokemon(name, hp, attack, defense, abilities, color=ENEMY_COLOR) # Fixed enemy color
 
 # Global variables for Pokémon data
 PLAYER_POKEMON = None 
 ENEMY_POKEMON = None 
 
-# --- 3. PYGAME INITIALIZATION ---
+# --- 3. PYGAME INITIALIZATION & FONT SETUP ---
 
 pygame.init()
 
@@ -116,14 +115,12 @@ BLUE = (50, 50, 150)
 YELLOW = (255, 215, 0)
 GRAY = (50, 50, 50)
 LIGHT_GRAY = (200, 200, 200)
+RED = (200, 50, 50) # Re-add red for effects
 
-# Fonts (Scaled up for 1080p)
+# Fonts (Revert to standard fonts, no more emoji-specific fonts)
 FONT_LG = pygame.font.Font(None, 96) 
 FONT_MD = pygame.font.Font(None, 64) 
 FONT_SM = pygame.font.Font(None, 48) 
-# NEW: Massive font for Emojis
-FONT_EMOJI_XL = pygame.font.Font(None, 300) 
-FONT_EMOJI_MD = pygame.font.Font(None, 120) 
 
 # Game State Management
 GAME_STATE = -1 
@@ -186,12 +183,90 @@ btn_w, btn_h = 250, 120
 start_x = SCREEN_WIDTH // 2 - (btn_w * 3 + 100) // 2 
 for i, name in enumerate(starter_names):
     x = start_x + (btn_w + 50) * i
-    btn = Button(x, SCREEN_HEIGHT // 2, btn_w, btn_h, name, STARTER_DATA[name]["color"], None)
+    # Use starter's specific color for the button
+    btn = Button(x, SCREEN_HEIGHT // 2, btn_w, btn_h, name, STARTER_DATA[name]["color"], None) 
     menu_buttons.append(btn)
     
 ABILITY_BUTTONS = [] 
 
-# --- 5. BATTLE RENDERING FUNCTIONS ---
+# --- 5. BATTLE RENDERING FUNCTIONS (MANUAL DRAWING) ---
+
+# Helper functions to draw stylized Pokémon shapes
+def draw_pyron(screen, center_x, center_y, color, size):
+    """Draws Pyron (Fire): Circle body with a triangle flame."""
+    radius = size * 0.6
+    
+    # Body (Circle)
+    pygame.draw.circle(screen, color, (center_x, center_y + int(radius * 0.2)), int(radius))
+    
+    # Flame (Triangle)
+    flame_points = [
+        (center_x, center_y - radius * 1.2),
+        (center_x - radius * 0.6, center_y - radius * 0.2),
+        (center_x + radius * 0.6, center_y - radius * 0.2)
+    ]
+    pygame.draw.polygon(screen, YELLOW, flame_points)
+    
+    # Border
+    pygame.draw.circle(screen, BLACK, (center_x, center_y + int(radius * 0.2)), int(radius), 5)
+
+def draw_hydroc(screen, center_x, center_y, color, size):
+    """Draws Hydroc (Water): Drop shape."""
+    radius = size * 0.7
+    
+    # Body (Circle base)
+    pygame.draw.circle(screen, color, (center_x, center_y + int(radius * 0.1)), int(radius))
+    
+    # Peak (Triangle top to make the drop shape)
+    drop_points = [
+        (center_x, center_y - radius * 1.1),
+        (center_x - radius * 0.8, center_y + radius * 0.2),
+        (center_x + radius * 0.8, center_y + radius * 0.2)
+    ]
+    pygame.draw.polygon(screen, color, drop_points)
+    
+    # Border (Just draw the circle border for simplicity)
+    pygame.draw.circle(screen, BLACK, (center_x, center_y + int(radius * 0.1)), int(radius), 5)
+
+def draw_terra(screen, center_x, center_y, color, size):
+    """Draws Terra (Grass): Circle body with a leaf top."""
+    radius = size * 0.65
+    
+    # Body (Circle)
+    pygame.draw.circle(screen, color, (center_x, center_y + int(radius * 0.2)), int(radius))
+    
+    # Leaf (Rotated rectangle)
+    leaf_rect = pygame.Rect(0, 0, radius * 1.5, radius * 0.4)
+    leaf_rect.center = (center_x, center_y - radius * 0.8)
+    
+    # We use transform.rotate for the leaf effect, though Pygame font is simple
+    # For a simple solution, we just draw a green circle/small triangle on top
+    pygame.draw.circle(screen, (150, 255, 100), (center_x, center_y - int(radius)), int(radius * 0.4))
+    
+    # Border
+    pygame.draw.circle(screen, BLACK, (center_x, center_y + int(radius * 0.2)), int(radius), 5)
+    
+
+def draw_enemy(screen, center_x, center_y, color, size):
+    """Draws Enemy (Generic): Spiky diamond shape."""
+    
+    # Simple Diamond
+    points = [
+        (center_x, center_y - size), # Top
+        (center_x + size, center_y), # Right
+        (center_x, center_y + size), # Bottom
+        (center_x - size, center_y)  # Left
+    ]
+    pygame.draw.polygon(screen, color, points)
+    
+    # Small inner spikes to look menacing
+    spike_color = (200, 0, 0)
+    pygame.draw.rect(screen, spike_color, (center_x - 10, center_y - size - 20, 20, 20))
+    pygame.draw.rect(screen, spike_color, (center_x - 10, center_y + size, 20, 20))
+    
+    # Black Border
+    pygame.draw.polygon(screen, BLACK, points, 5)
+
 
 def draw_hp_bar(screen, x, y, hp_percent, name, current_hp, max_hp, is_player):
     """Draws the Pokémon's name and its health bar."""
@@ -214,19 +289,21 @@ def draw_hp_bar(screen, x, y, hp_percent, name, current_hp, max_hp, is_player):
         hp_text = FONT_MD.render(f"HP: {current_hp}/{max_hp}", True, BLACK)
         screen.blit(hp_text, (x + BAR_WIDTH + 20, y + 40)) 
 
-# NEW FUNCTION: Draws the scaled emoji
-def draw_pokemon_emoji(screen, pokemon, center_x, center_y, font):
-    """Draws the Pokémon's emoji using a large font."""
-    # Note: Emojis are treated as text by Pygame's font renderer. Their color is usually defined by the OS/Font,
-    # so we render them in white (or black) to allow the OS/Font to render the color emoji if possible,
-    # or just use the font color if not. Using WHITE tends to work best for colored emojis.
-    emoji_surface = font.render(pokemon.emoji, True, WHITE)
-    emoji_rect = emoji_surface.get_rect(center=(center_x, center_y))
-    screen.blit(emoji_surface, emoji_rect)
-
+def get_drawing_function(pokemon_name):
+    """Maps the Pokémon name to its corresponding drawing function."""
+    if pokemon_name == "Pyron":
+        return draw_pyron
+    elif pokemon_name == "Hydroc":
+        return draw_hydroc
+    elif pokemon_name == "Terra":
+        return draw_terra
+    else:
+        # Enemy names are random, so we rely on the type logic below or use the enemy default
+        return draw_enemy
+        
 
 def draw_battle_interface(screen):
-    """Draws the entire battle scene with emojis."""
+    """Draws the entire battle scene with manually drawn sprites."""
     global GAME_STATE, GAME_MESSAGE, PLAYER_POKEMON, ENEMY_POKEMON
     
     # 1. Background and Arena
@@ -234,17 +311,22 @@ def draw_battle_interface(screen):
     pygame.draw.rect(screen, (220, 220, 255), (0, 0, SCREEN_WIDTH, int(SCREEN_HEIGHT * 0.6))) 
     pygame.draw.rect(screen, (150, 255, 150), (0, int(SCREEN_HEIGHT * 0.6), SCREEN_WIDTH, int(SCREEN_HEIGHT * 0.4))) 
     
+    SPRITE_SIZE_BATTLE = 150 # Radius/Scale for large sprites
+    
     if PLAYER_POKEMON and ENEMY_POKEMON:
         
-        # --- Draw Pokémon Emojis (XL size) ---
+        # --- Draw Pokémon Sprites ---
         
         # Enemy Pokémon (Top Right)
         enemy_x, enemy_y = SCREEN_WIDTH * 0.75, SCREEN_HEIGHT * 0.25
-        draw_pokemon_emoji(screen, ENEMY_POKEMON, int(enemy_x), int(enemy_y), FONT_EMOJI_XL)
+        # Enemy always uses the generic enemy drawing function
+        draw_enemy(screen, int(enemy_x), int(enemy_y), ENEMY_POKEMON.color, SPRITE_SIZE_BATTLE)
         
         # Player Pokémon (Bottom Left)
         player_x, player_y = SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.55
-        draw_pokemon_emoji(screen, PLAYER_POKEMON, int(player_x), int(player_y), FONT_EMOJI_XL)
+        # Player uses the function specific to their starter type
+        player_draw_func = get_drawing_function(PLAYER_POKEMON.name)
+        player_draw_func(screen, int(player_x), int(player_y), PLAYER_POKEMON.color, SPRITE_SIZE_BATTLE)
         
         # 2. HP Bars
         draw_hp_bar(screen, SCREEN_WIDTH - 500, 80, ENEMY_POKEMON.get_hp_percentage(), 
@@ -253,7 +335,7 @@ def draw_battle_interface(screen):
                     PLAYER_POKEMON.name, PLAYER_POKEMON.current_hp, PLAYER_POKEMON.max_hp, True)
 
     # 3. Message/Action Box 
-    box_height = 100 
+    box_height = 100
     box_width = SCREEN_WIDTH // 2 - 50 
     box_x = 50
     box_y = SCREEN_HEIGHT - box_height - 60
@@ -281,7 +363,7 @@ def draw_battle_interface(screen):
             color = GREEN
         else:
             outcome_text = f"DEFEAT! {PLAYER_POKEMON.name} fainted."
-            color = (200, 50, 50)
+            color = RED
             
         final_message = FONT_LG.render(outcome_text, True, color)
         message_rect = final_message.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
@@ -294,7 +376,7 @@ def draw_battle_interface(screen):
 # --- STARTER MENU LOGIC AND RENDERING ---
 
 def draw_starter_menu(screen, input_active):
-    """Draws the starter selection and naming interface with emojis."""
+    """Draws the starter selection and naming interface with manual sprites."""
     global GAME_MESSAGE, player_name_input
     
     screen.fill(LIGHT_GRAY)
@@ -309,16 +391,19 @@ def draw_starter_menu(screen, input_active):
     
     # Buttons
     if GAME_MESSAGE == "Choose your starter Pokémon!":
+        SPRITE_SIZE_MENU = 40 # Radius/Scale for small sprites
+        
         for button in menu_buttons:
             button.draw(screen)
             
-            # Draw medium emoji above the button
+            # Draw small sprite above the button
             starter_data = STARTER_DATA[button.text]
-            draw_pokemon_emoji(screen, 
-                               Pokemon(button.text, 0, 0, 0, [], emoji=starter_data["emoji"]),
-                               button.rect.centerx,
-                               button.rect.y - 80, # Adjusted position to be higher
-                               FONT_EMOJI_MD)
+            draw_func = get_drawing_function(button.text)
+            draw_func(screen, 
+                      button.rect.centerx,
+                      button.rect.y - 80, 
+                      starter_data["color"],
+                      SPRITE_SIZE_MENU)
             
             # Display stats below buttons 
             stats_text = FONT_SM.render(
@@ -417,9 +502,8 @@ def main_game_loop():
                             stats = selected_starter_data["stats"]
                             abilities = selected_starter_data["abilities"]
                             color = selected_starter_data["color"]
-                            emoji = selected_starter_data["emoji"]
                             PLAYER_POKEMON = Pokemon(
-                                player_name_input, stats[0], stats[1], stats[2], abilities, color=color, emoji=emoji, is_player=True
+                                player_name_input, stats[0], stats[1], stats[2], abilities, color=color, is_player=True
                             )
                             ENEMY_POKEMON = generate_enemy_pokemon()
                             ABILITY_BUTTONS = create_ability_buttons(PLAYER_POKEMON)
@@ -434,9 +518,8 @@ def main_game_loop():
                                 stats = selected_starter_data["stats"]
                                 abilities = selected_starter_data["abilities"]
                                 color = selected_starter_data["color"]
-                                emoji = selected_starter_data["emoji"]
                                 PLAYER_POKEMON = Pokemon(
-                                    player_name_input, stats[0], stats[1], stats[2], abilities, color=color, emoji=emoji, is_player=True
+                                    player_name_input, stats[0], stats[1], stats[2], abilities, color=color, is_player=True
                                 )
                                 ENEMY_POKEMON = generate_enemy_pokemon()
                                 ABILITY_BUTTONS = create_ability_buttons(PLAYER_POKEMON)
