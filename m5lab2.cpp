@@ -32,7 +32,7 @@ int main()
    width = getWidth();
    
    // Get the rectangle's area.
-   area = getArea();
+   area = getArea(length, width);
    
    // Display the rectangle's data.
    displayData(length, width, area);
@@ -46,22 +46,27 @@ int main()
 //***************************************************
 
 double getLength() {
-    cout << "Not implemented." << endl;
-    return 0.0;
+    double length;
+    cout << "What is the length? ";
+    cin >> length;
+    return length;
 }
 
 double getWidth() {
-    cout << "Not implemented." << endl;
-    return 0.0;
+    double width;
+    cout << "What is the width? ";
+    cin >> width;
+    return width;
 }
 
 double getArea(double length, double width) {
-    cout << "Not implemented." << endl;
-    return 0.0;
+    double area;
+    area = length * width;
+    return area;
 }
 
 void displayData(double length, double width, double area) {
-    cout << "Not implemented." << endl;
-    return 0.0;
+    cout << "Rectangle is " << length << " by " << width << "." << endl;
+    cout << "Area is: " << area << endl;
+    return;
 }
-
