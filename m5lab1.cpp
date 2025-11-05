@@ -14,7 +14,7 @@ int main() {
     int choice;
     int max = 3;
     cout << "Testing: 1,2, or 3." << endl;
-    int choice = getPlayerChoice();
+    choice = getPlayerChoice(max);
     cout << "You chose: " << choice << endl;
 }
 
