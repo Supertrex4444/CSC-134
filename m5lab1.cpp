@@ -44,6 +44,7 @@ int getPlayerChoice(int maxChoice) {
 
         // Validate range
         if (choice >= 1 && choice <= maxChoice) {
+            cout << endl;
             return choice;
         }
         else {
@@ -58,7 +59,7 @@ int getPlayerChoice(int maxChoice) {
 }
 
 void showChoices(string choice1, string choice2, string choice3) {
-
+    cout << endl;
     cout << "--- MAKE YOUR CHOICE ---" << endl;
     int num = 1;
     cout << num << ". " << choice1 << endl;
@@ -78,27 +79,98 @@ void showChoices(string choice1, string choice2, string choice3) {
 /////////////////////////
 // Story functions
 ////////////////////////
+void room1Choice1();
+void room1Choice2();
+void room1Choice3();
+void room2Choice1();
+void room2Choice2();
+
+void gameOver();
+void goodEnding();
+
+
 void game_start() {
-    int choice;
-
     cout << R"(
-    Two paths appear before you.
+Two paths appear before you.
 
-    The path on the left leads into a bright and sunny field.
+The path on the left leads into a bright and sunny field.
 
-    The path on the right leads into a dark and gloomy forest.
+The path on the right leads into a dark and gloomy forest.
     )" << endl;
 
-    showChoices("Go left","Go right", "Turn back and go home");
+    int choice;
+    showChoices("Go left (sunny field)","Go right (gloomy forest)", "Turn back and go home");
     choice = getPlayerChoice(MAX);
 
     if (choice == 1) {
-        cout << "You go left" << endl;
+        room1Choice1();
     }
     if (choice == 2) {
-        cout << "You go right" << endl;
+        room1Choice2();
     }
     if (choice == 3) {
-        cout << "You go home" << endl;
+        room1Choice3();
     }
+}
+
+void room1Choice1(){
+        cout << endl;
+        cout << "You enter the bright and sunny field." << endl;
+        cout << "Unfortunately it was too sunny and you were sunburnt." << endl;
+        gameOver();
+}
+
+void room1Choice2(){
+    cout << endl;
+    cout << "You enter the dark and gloomy forest." << endl;
+    cout << "You see a light up ahead." << endl;
+    int choice;
+    showChoices("Go towards the light","Go the opposite way","");
+    choice = getPlayerChoice(2);
+
+    if (choice == 1) {
+        room2Choice1();
+    }
+    if (choice == 2) {
+        room2Choice2();
+    }
+}
+
+void room1Choice3(){
+        cout << endl;
+        cout << "Rather than going down either path, you instead just turn around and leave." << endl;
+        gameOver();
+}
+
+void room2Choice1(){
+    cout << "You go towards the light." << endl;
+    cout << "The source of this light was a campfire, a skeleton sat nearby roasting a marshmallow for s'mores." << endl;
+    cout << endl;
+    cout << "You sat around the campfire with the skeleton and ate s'mores with it." << endl;
+    goodEnding();
+}
+
+void room2Choice2(){
+    cout << "You decide to not go towards the light and instead just leave." << endl;
+    cout << "On your way out, however, you tripped on a branch." << endl;
+    gameOver();
+}
+
+
+void gameOver(){
+    cout << R"(
+ ___________________________________________
+|                                           |
+|                GAME OVER                  |
+|___________________________________________|
+    )" << endl;
+}
+
+void goodEnding(){
+    cout << R"(
+ ___________________________________________
+|                                           |
+|               Good Ending                 |
+|___________________________________________|
+    )" << endl;
 }
