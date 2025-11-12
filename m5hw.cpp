@@ -11,7 +11,7 @@ double question1();
 double question2();
 
 int main() {
-    question1();
+    //question1();
     question2();
 }
 
@@ -39,6 +39,7 @@ double question1() {
     double average = (rainfall1 + rainfall2 + rainfall3) / 3.0;
     cout << "The average rainfall for " << month1 << ", " << month2 << ", " << month3 << " is " << average << " inches." << endl;
     cout << endl;
+    return 0.0;
 }
 
 double question2() {
@@ -46,10 +47,34 @@ double question2() {
     double length;
     double height;
 
-    cout << "Enter the width of hyperrectangle: "
+    cout << "Enter the width of hyperrectangle: ";
     cin >> width;
-    cout << "Enter the length of hyperrectangle: "
+    while (width <= 0) {
+    cin.ignore();
+    cin.clear();
+    cout << "Enter the width of hyperrectangle: ";
+    cin >> width; 
+    }
+    
+    cout << "Enter the length of hyperrectangle: ";
     cin >> length;
-    cout << "Enter the height of hyperrectangle: "
+    while (length <= 0) {
+    cin.ignore();
+    cin.clear();
+    cout << "Enter the length of hyperrectangle: ";
+    cin >> length; 
+    }
+
+    cout << "Enter the height of hyperrectangle: ";
     cin >> height;
+    while (height <= 0) {
+    cin.ignore();
+    cin.clear();
+    cout << "Enter the height of hyperrectangle: ";
+    cin >> height; 
+    }
+    double volume = width * length * height;
+    cout << "The volume of the hyperrectangle is: " << volume << endl;
+    cout << endl;
+    return 0.0;
 }
