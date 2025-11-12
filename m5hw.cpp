@@ -10,11 +10,33 @@ using namespace std;
 double question1();
 double question2();
 void question3();
+double question4();
+int question5();
 
 int main() {
+    cout << "--Welcome to the M5HW Program--" << endl << endl;
     //question1();
     //question2();
+    //question3();
+    //question4();
+    question5();
+}
+
+void question6() {
+
+    cout << endl;
+    cout << "1. Question 1" << endl;
+    cout << "2. Question 2" << endl;
+    cout << "3. Question 3" << endl;
+    cout << "4. Question 4" << endl;
+    cout << "5. Question 5" << endl;
+    cout << "6. Question 6" << endl;
+    question1();
+    question2();
     question3();
+    question4();
+    question5();
+
 }
 
 double question1() {
@@ -110,4 +132,99 @@ void question3() {
     }
     cout << base_value << " as a roman numeral is " << roman_num << endl;
     cout << endl;
+}
+
+double question4() {
+    int choice;
+    do {
+        cout << "Geometry Calculator" << endl;
+        cout << "1. Calculate the Area of a Circle" << endl;
+        cout << "2. Calculate the Area of a Rectangle" << endl;
+        cout << "3. Calculate the Area of a Triangle" << endl;
+        cout << "4. Quit" << endl;
+        cout << "Enter your choice (1-4): ";
+        cin >> choice;
+        cout << endl;
+    }
+    while (choice <= 0 or choice > 4);
+    
+    if (choice == 1){
+        double radius;
+        cout << "Enter the circle's radius: ";
+        cin >> radius;
+        while (radius < 0) {
+            cin.ignore();
+            cin.clear();
+            cout << "The radius cannot be less than zero.";
+            cin >> radius; 
+        }
+        cout << endl;
+        cout << "The area is: " << 3.14159 * (radius * radius);
+    }
+
+    if (choice == 2){
+        double width;
+        double height;
+        cout << "Enter the rectangle's width: ";
+        cin >> width;
+        while (width < 0) {
+            cin.ignore();
+            cin.clear();
+            cout << "The width cannot be less than zero.";
+            cin >> width; 
+        }
+        cout << "Enter the rectangle's height: ";
+        cin >> height;
+                while (height < 0) {
+            cin.ignore();
+            cin.clear();
+            cout << "The height cannot be less than zero.";
+            cin >> height; 
+        }
+        cout << endl;
+        cout << "The area is: " << width * height;
+    }
+
+
+    if (choice == 3){
+        double base;
+        double height;
+        cout << "Enter the triangle's base: ";
+        cin >> base;
+        while (base < 0) {
+            cin.ignore();
+            cin.clear();
+            cout << "The base cannot be less than zero.";
+            cin >> base; 
+        }
+        cout << "Enter the triangle's height: ";
+        cin >> height;
+                while (height < 0) {
+            cin.ignore();
+            cin.clear();
+            cout << "The height cannot be less than zero.";
+            cin >> height; 
+        }
+        cout << endl;
+        cout << "The area is: " << 0.5 * base * height;
+    }
+    return 0.0;
+}
+
+int question5() {
+    double mph;
+    double hours;
+    cout << "What is the speed of the vehicle in mph? ";
+    cin >> mph;
+    cout << "How many hours has it traveled? ";
+    cin >> hours;
+    cout << R"(
+Hour    Distance Traveled
+------------------------------------------
+)";
+    for (int i=1; i < hours+1; i++) {
+        cout << "  " << i << "            " << mph*i << endl;
+    }
+    cout << endl;
+    return 0.0;
 }
