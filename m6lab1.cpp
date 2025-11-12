@@ -1,3 +1,10 @@
+/*
+CSC 134
+m6lab1
+Travis Cayton
+11/12/25
+*/
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -9,8 +16,7 @@ using namespace std;
 // ============================================================================
 // GLOBAL VARIABLES - Accessible to all functions
 // ============================================================================
-// The super soaker's cartridges ('W' = Water, 'S' = Slime)
-vector<char> superSoaker;
+vector<char> cardDeck;
 
 // Player scores
 int playerScore = 3;
@@ -24,10 +30,10 @@ bool gameOver = false;
 // FUNCTION PROTOTYPES
 // ============================================================================
 void setupGame();
-void loadSuperSoaker(int waterCount, int slimeCount);
-void shuffleSuperSoaker();
+void loadCardDeck(int redCardCount, int blackCardCount);
+void shuffleCardDeck();
 void displayGameState();
-void displaySuperSoaker(bool showContents);
+void displayCardDeck(bool showContents);
 char fireShot();
 void playerTurn();
 void opponentTurn();
@@ -40,12 +46,12 @@ int main() {
     srand(time(0));  // Seed random number generator
     
     cout << "╔════════════════════════════════════════╗" << endl;
-    cout << "║     SLIME ROULETTE: SUPER SOAKER       ║" << endl;
-    cout << "║    The Work-Safe Dare-You Roulette     ║" << endl;
+    cout << "║             CARD ROULETTE              ║" << endl;
+    cout << "║                                        ║" << endl;
     cout << "╚════════════════════════════════════════╝" << endl;
     cout << "\nRules:" << endl;
-    cout << "🔵 Blue cartridges = Harmless water (you get another turn!)" << endl;
-    cout << "🟢 Green cartridges = Slime (lose a point!)" << endl;
+    cout << "♦️ Red cards = You get another turn!" << endl;
+    cout << "♣️ Black cards = lose a point!" << endl;
     cout << "First to 0 points loses!\n" << endl;
     
     setupGame();
@@ -61,8 +67,8 @@ int main() {
         checkGameOver();
         
         // If super soaker is empty, reload for next round
-        if (superSoaker.empty() && !gameOver) {
-            cout << "\n💦 Super soaker is empty! Reloading for next round..." << endl;
+        if (cardDeck.empty() && !gameOver) {
+            cout << "\nCard Deck is out! Reshuffling for next round..." << endl;
             cout << "Press Enter to continue...";
             cin.ignore();
             cin.get();
@@ -76,9 +82,9 @@ int main() {
     cout << "╚════════════════════════════════════════╝" << endl;
     
     if (playerScore <= 0) {
-        cout << "💚 You got slimed! Opponent wins!" << endl;
+        cout << "Opponent wins!" << endl;
     } else {
-        cout << "🎉 You win! Opponent got slimed!" << endl;
+        cout << "You win!" << endl;
     }
     
     return 0;
@@ -90,34 +96,34 @@ int main() {
 
 void setupGame() {
     // Clear any existing cartridges
-    superSoaker.clear();
+    cardDeck.clear();
     
     // Load the super soaker with random cartridges
-    int waterCount = 2 + rand() % 3;  // 2-4 water cartridges
-    int slimeCount = 2 + rand() % 2;  // 2-3 slime cartridges
+    int redCardCount = 2 + rand() % 3;  // 2-4 water cartridges
+    int blackCardCount = 2 + rand() % 2;  // 2-3 slime cartridges
     
-    loadSuperSoaker(waterCount, slimeCount);
-    shuffleSuperSoaker();
+    loadCardDeck(redCardCount, blackCardCount);
+    shuffleCardDeck();
     
-    cout << "\n🔫 Super soaker loaded!" << endl;
-    displaySuperSoaker(false);  // Show counts but not order
+    cout << "\nCard deck reshuffled!" << endl;
+    displayCardDeck(false);  // Show counts but not order
 }
 
-void loadSuperSoaker(int waterCount, int slimeCount) {
+void loadCardDeck(int redCardCount, int blackCardCount) {
     // Add water cartridges
-    for (int i = 0; i < waterCount; i++) {
-        superSoaker.push_back('W');
+    for (int i = 0; i < redCardCount; i++) {
+        cardDeck.push_back('W');
     }
     
     // Add slime cartridges
-    for (int i = 0; i < slimeCount; i++) {
-        superSoaker.push_back('S');
+    for (int i = 0; i < blackCardCount; i++) {
+        cardDeck.push_back('S');
     }
 }
 
-void shuffleSuperSoaker() {
+void shuffleCardDeck() {
     // Shuffle the cartridges so players don't know the order
-    random_shuffle(superSoaker.begin(), superSoaker.end());
+    random_shuffle(cardDeck.begin(), cardDeck.end());
 }
 
 // ============================================================================
@@ -130,26 +136,26 @@ void displayGameState() {
     cout << "└─────────────────────────────────────────┘" << endl;
 }
 
-void displaySuperSoaker(bool showContents) {
-    int waterCount = 0;
-    int slimeCount = 0;
+void displayCardDeck(bool showContents) {
+    int redCardCount = 0;
+    int blackCardCount = 0;
     
     // Count each type using a range-based for loop
-    for (char cartridge : superSoaker) {
-        if (cartridge == 'W') waterCount++;
-        else slimeCount++;
+    for (char cartridge : cardDeck) {
+        if (cartridge == 'W') redCardCount++;
+        else blackCardCount++;
     }
     
-    cout << "Super Soaker contents: ";
-    cout << "🔵 " << waterCount << " water, ";
-    cout << "🟢 " << slimeCount << " slime";
-    cout << " (" << superSoaker.size() << " total)" << endl;
+    cout << "Card Deck contents: ";
+    cout << "♦️ " << redCardCount << " Red, ";
+    cout << "♣️ " << blackCardCount << " Black";
+    cout << " (" << cardDeck.size() << " total)" << endl;
     
     // For debugging/demonstration - show actual order
     if (showContents) {
         cout << "Actual order: ";
-        for (char cartridge : superSoaker) {
-            cout << (cartridge == 'W' ? "🔵" : "🟢") << " ";
+        for (char cartridge : cardDeck) {
+            cout << (cartridge == 'W' ? "♦️" : "♣️") << " ";
         }
         cout << endl;
     }
@@ -163,15 +169,15 @@ char fireShot() {
     // Fire the next cartridge (remove from front of vector)
     // This is why we use a vector - easy to remove from front!
     
-    if (superSoaker.empty()) {
+    if (cardDeck.empty()) {
         return 'E';  // Empty!
     }
     
     // Get the first cartridge
-    char cartridge = superSoaker.front();
+    char cartridge = cardDeck.front();
     
     // Remove it from the super soaker
-    superSoaker.erase(superSoaker.begin());
+    cardDeck.erase(cardDeck.begin());
     
     return cartridge;
 }
@@ -182,10 +188,10 @@ char fireShot() {
 
 void playerTurn() {
     displayGameState();
-    displaySuperSoaker(false);
+    displayCardDeck(false);
     
     cout << "\n>>> YOUR TURN <<<" << endl;
-    cout << "Fire at: [1] Yourself  [2] Opponent" << endl;
+    cout << "Who should draw a card?: [1] Yourself  [2] Opponent" << endl;
     cout << "Choice: ";
     
     int choice;
@@ -197,25 +203,25 @@ void playerTurn() {
         cin >> choice;
     }
     
-    cout << "\n💦 *SPLASH!* ";
+    cout << "\nThe card is... ";
     char result = fireShot();
     
     if (result == 'W') {
-        cout << "🔵 Water! " << endl;
+        cout << "♦️ Red " << endl;
         if (choice == 1) {
-            cout << "You're wet but safe! You get another turn!" << endl;
+            cout << "You draw a red card! You get another turn!" << endl;
             // Player keeps their turn (currentPlayer stays "Player")
         } else {
-            cout << "Opponent is soaked but unharmed." << endl;
+            cout << "Opponent draws a red card!" << endl;
             currentPlayer = "Opponent";  // Switch turns
         }
     } else if (result == 'S') {
-        cout << "🟢 SLIME!" << endl;
+        cout << "♣️ Black" << endl;
         if (choice == 1) {
-            cout << "You got slimed! -1 point!" << endl;
+            cout << "You draw a black card! -1 point!" << endl;
             playerScore--;
         } else {
-            cout << "Opponent got slimed! -1 point!" << endl;
+            cout << "Opponent draws a black card! -1 point!" << endl;
             opponentScore--;
         }
         currentPlayer = "Opponent";  // Switch turns after slime
@@ -224,7 +230,7 @@ void playerTurn() {
 
 void opponentTurn() {
     displayGameState();
-    displaySuperSoaker(false);
+    displayCardDeck(false);
     
     cout << "\n>>> OPPONENT'S TURN <<<" << endl;
     cout << "Press Enter to see opponent's choice...";
@@ -235,30 +241,30 @@ void opponentTurn() {
     int choice = 1 + rand() % 2;
     
     if (choice == 1) {
-        cout << "Opponent fires at themselves!" << endl;
+        cout << "Opponent draws a card for themself" << endl;
     } else {
-        cout << "Opponent fires at you!" << endl;
+        cout << "Opponent makes you draw a card" << endl;
     }
     
-    cout << "\n💦 *SPLASH!* ";
+    cout << "\nThe card is... ";
     char result = fireShot();
     
     if (result == 'W') {
-        cout << "🔵 Water!" << endl;
+        cout << "♦️ Red" << endl;
         if (choice == 1) {
-            cout << "Opponent is wet but gets another turn!" << endl;
+            cout << "Opponent gets another turn!" << endl;
             // Opponent keeps their turn
         } else {
-            cout << "You're soaked but unharmed." << endl;
+            cout << "You get a turn!" << endl;
             currentPlayer = "Player";  // Switch turns
         }
     } else if (result == 'S') {
-        cout << "🟢 SLIME!" << endl;
+        cout << "♣️ Black" << endl;
         if (choice == 1) {
-            cout << "Opponent got slimed! -1 point!" << endl;
+            cout << "Opponent draws a black card! -1 point!" << endl;
             opponentScore--;
         } else {
-            cout << "You got slimed! -1 point!" << endl;
+            cout << "You draw a black card! -1 point!" << endl;
             playerScore--;
         }
         currentPlayer = "Player";  // Switch turns after slime
