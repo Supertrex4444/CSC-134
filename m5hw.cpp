@@ -9,10 +9,12 @@ using namespace std;
 
 double question1();
 double question2();
+void question3();
 
 int main() {
     //question1();
-    question2();
+    //question2();
+    question3();
 }
 
 double question1() {
@@ -77,4 +79,35 @@ double question2() {
     cout << "The volume of the hyperrectangle is: " << volume << endl;
     cout << endl;
     return 0.0;
+}
+
+void question3() {
+    int value;
+    string roman_num = "";
+    cout << "Enter value between 1 and 10: ";
+    cin >> value;
+    int base_value = value;
+    while (value < 0 && value > 10) {
+        cin.ignore();
+        cin.clear();
+        cout << "Enter value between 1 and 10: ";
+        cin >> value; 
+    }
+
+    while (value > 0) {
+        if (value == 10){
+            roman_num = roman_num + "X";
+            value = value - 10;
+        }
+        if (value >= 5 && value < 10){
+            roman_num = roman_num + "V";
+            value = value - 5;
+        }
+        if (value >= 1 && value < 5 && value < 10){
+            roman_num = roman_num + "I";
+            value = value - 1;
+        }
+    }
+    cout << base_value << " as a roman numeral is " << roman_num << endl;
+    cout << endl;
 }
