@@ -12,31 +12,49 @@ double question2();
 void question3();
 double question4();
 int question5();
+void question6();
 
 int main() {
     cout << "--Welcome to the M5HW Program--" << endl << endl;
-    //question1();
-    //question2();
-    //question3();
-    //question4();
-    question5();
+    question6();
 }
 
 void question6() {
+    int choice;
+        while (choice != 6)
+        {
+        
+        do {
+        cout << endl;
+        cout << "1. Question 1" << endl;
+        cout << "2. Question 2" << endl;
+        cout << "3. Question 3" << endl;
+        cout << "4. Question 4" << endl;
+        cout << "5. Question 5" << endl;
+        cout << "6. Quit" << endl << endl;
 
-    cout << endl;
-    cout << "1. Question 1" << endl;
-    cout << "2. Question 2" << endl;
-    cout << "3. Question 3" << endl;
-    cout << "4. Question 4" << endl;
-    cout << "5. Question 5" << endl;
-    cout << "6. Question 6" << endl;
-    question1();
-    question2();
-    question3();
-    question4();
-    question5();
+        cout << "Enter choice: ";
+        cin >> choice;
 
+        }
+        while (choice < 0 or choice > 6);
+        if (choice == 1) {
+            question1();
+        }
+        if (choice == 2) {
+            question2();
+        }
+        if (choice == 3) {
+            question3();
+        }
+        if (choice == 4) {
+            question4();
+        }
+        if (choice == 5) {
+            question5();
+        }
+    }
+    cout << "Goodbye!" << endl;
 }
 
 double question1() {
