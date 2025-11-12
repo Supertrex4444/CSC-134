@@ -1,7 +1,7 @@
 // CSC 134
-// M4HW1
+// M5HW
 // Travis Cayton
-// 10/29/2025
+// 11/12/2025
 // Gold
 
 #include <iostream>
@@ -12,6 +12,7 @@ double question2();
 
 int main() {
     question1();
+    question2();
 }
 
 double question1() {
@@ -37,8 +38,18 @@ double question1() {
     cin >> rainfall3;
     double average = (rainfall1 + rainfall2 + rainfall3) / 3.0;
     cout << "The average rainfall for " << month1 << ", " << month2 << ", " << month3 << " is " << average << " inches." << endl;
+    cout << endl;
 }
 
 double question2() {
+    double width;
+    double length;
+    double height;
 
+    cout << "Enter the width of hyperrectangle: "
+    cin >> width;
+    cout << "Enter the length of hyperrectangle: "
+    cin >> length;
+    cout << "Enter the height of hyperrectangle: "
+    cin >> height;
 }
