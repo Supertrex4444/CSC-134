@@ -21,6 +21,7 @@ int player_health = 100;
 void createCharacter();
 void gameStart();
 void screenUpdate();
+void characterProfile();
 int statPoints(int unspentPoints);
 
 
@@ -31,7 +32,19 @@ cout << endl;
 cout << "Enter character name: ";
 cin >> player_name;
 statPoints(5);
-cout << "Nice! now you have all your talent points";
+characterProfile();
+cout << "|-Press any key to begin-|" << endl;
+cout << "The game started" << endl;
+}
+
+void characterProfile(){
+    screenUpdate();
+    cout << "             Character Profile" << endl;
+    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
+    cout << "Name: " << player_name << endl << "Strength: (" << player_str << ")" << endl << "Intelligence: (" << player_int << ")" << endl << "Agility: (" << player_agi << ")" << endl << "Charisma: (" << player_char << ")" << endl;
+    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
+    cout << endl;
+    cout << endl;
 }
 
 int statPoints(int unspentPoints){
@@ -69,10 +82,11 @@ int statPoints(int unspentPoints){
 
 void gameStart() {
     cout << R"(
-     ___________________________________________
-    |                                           |
-    |              DUNGEON DECIDE               |
-    |___________________________________________|
+     =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+                                               
+                  DUNGEON DECIDE 
+
+     =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     )" << endl;
     cout << endl << endl << endl;
     createCharacter();
