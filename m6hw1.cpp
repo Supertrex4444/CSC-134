@@ -8,6 +8,8 @@ Gold
 
 
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 
@@ -17,24 +19,38 @@ int player_int = 1;
 int player_agi = 1;
 int player_char = 1;
 int player_health = 100;
+string currentRoomName = "";
 
 void createCharacter();
 void gameStart();
 void screenUpdate();
 void characterProfile();
+void createRoom();
 int statPoints(int unspentPoints);
 
 
+void createRoom() {
+    string room_type[5] = {"Chamber","Dungeon","Cave","Mountain","Field"};
+    string room_modifier[5] = {"Fire","Wind","Valor","Shadows","The Dragon"};
+    int min = 0;
+    int max = 5;
+    int randomNumberInRange1 = min + (rand() % (max - min + 1));
+    int randomNumberInRange2 = min + (rand() % (max - min + 1));
+    currentRoomName = room_type[randomNumberInRange1] + " of " + room_modifier[randomNumberInRange2];
+    cout << currentRoomName;
+}
+
 
 void createCharacter() {
-cout << "-CHARACTER CREATOR-" << endl; 
-cout << endl;
-cout << "Enter character name: ";
-cin >> player_name;
-statPoints(5);
-characterProfile();
-cout << "|-Press any key to begin-|" << endl;
-cout << "The game started" << endl;
+    cout << "-CHARACTER CREATOR-" << endl; 
+    cout << endl;
+    cout << "Enter character name: ";
+    cin >> player_name;
+    statPoints(5);
+    characterProfile();
+    cout << "|-Press any key to begin-|" << endl;
+    cout << "The game started" << endl;
+    createRoom();
 }
 
 void characterProfile(){
