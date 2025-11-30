@@ -91,13 +91,21 @@ What will you do?
     
 1. Fight
 2. Act
-3. Retreat    
+3. Retreat
 )";
 
-cout << "Enter choice: ";
-string choice = "";
-
-
+    cout << "Enter choice: ";
+    string choice = "";
+    cin >> choice;
+    while (choice != "1" && choice != "2" && choice != "3") {
+        cout << "TRY AGAIN, Enter Choice: ";
+        cin >> choice;
+    }
+    if (choice == "1") {
+        if (player_str > player_agi && player_str > player_int && player_str > player_char) {
+            cout << player_name << " deals a mighty blow to " << enemy_name << " dealing " << player_str << " damage!";
+        }
+    }
 
 }
 
