@@ -82,10 +82,14 @@ void roomGameplay() {
 }
 
 void combat() {
-    cout << player_name << " is fighting " << enemy_name << "!" << endl;
-    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
-    cout << "Your Health: " << player_health << " | " << "Enemy's Health: " << enemy_health << endl;
-    cout << R"(
+    while (enemy_health > 0 && player_health > 0){
+        
+        int damage_dealt = 0;
+        cout << player_name << " is fighting " << enemy_name << "!" << endl;
+        cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
+        cout << "Your Health: " << player_health << " | " << "Enemy's Health: " << enemy_health << endl;
+        cout << R"(
+        
 
 What will you do?
     
@@ -94,19 +98,42 @@ What will you do?
 3. Retreat
 )";
 
-    cout << "Enter choice: ";
-    string choice = "";
-    cin >> choice;
-    while (choice != "1" && choice != "2" && choice != "3") {
-        cout << "TRY AGAIN, Enter Choice: ";
+        cout << "Enter choice: ";
+        string choice = "";
         cin >> choice;
-    }
-    if (choice == "1") {
-        if (player_str > player_agi && player_str > player_int && player_str > player_char) {
-            cout << player_name << " deals a mighty blow to " << enemy_name << " dealing " << player_str << " damage!";
+        screenUpdate();
+        while (choice != "1" && choice != "2" && choice != "3") {
+            cout << "TRY AGAIN, Enter Choice: ";
+            cin >> choice;
         }
+        if (choice == "1") {
+            //if strength is greatest
+            if (player_str > player_agi && player_str > player_int && player_str > player_char) {
+                damage_dealt = player_str + rng(8);
+                cout << player_name << " strikes " << enemy_name <<  " powerfully with their weapon, dealing " << damage_dealt << " damage!";
+                enemy_health = enemy_health - damage_dealt;
+            }
+            //if intelligence is greatest
+            if (player_int > player_agi && player_int > player_str && player_int > player_char) {
+                damage_dealt = player_int + rng(6);
+                cout << player_name << " casts a frostbolt at " << enemy_name <<  ", dealing " << damage_dealt << " damage!";
+                enemy_health = enemy_health - damage_dealt;   
+            }
+            //if agility is greatest
+            if (player_agi > player_str && player_agi > player_int && player_agi > player_char) {
+                damage_dealt = player_agi + rng(4);
+                cout << player_name << " preforms a swift attack to " << enemy_name <<  ", dealing " << damage_dealt << " damage!";
+                enemy_health = enemy_health - damage_dealt;
+            }
+            //if charisma is greatest
+            if (player_char > player_str && player_char > player_int && player_char > player_agi) {
+                damage_dealt = player_char + rng(2);
+                cout << player_name << " insults " << enemy_name <<  ", dealing " << damage_dealt << " emotional damage!";
+                enemy_health = enemy_health - damage_dealt;
+            }
+        }
+        cout << endl << endl << endl << endl;
     }
-
 }
 
 
