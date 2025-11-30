@@ -19,25 +19,86 @@ int player_int = 1;
 int player_agi = 1;
 int player_char = 1;
 int player_health = 100;
+int player_xp = 0;
+int player_level = 1;
+string enemy_name = "NAME";
+int enemy_str = 1;
+int enemy_int = 1;
+int enemy_agi = 1;
+int enemy_char = 1;
+int enemy_health = 100;
 string currentRoomName = "";
+
+
+
 
 void createCharacter();
 void gameStart();
 void screenUpdate();
 void characterProfile();
 void createRoom();
+void createEnemy();
+void roomGameplay();
+void combat();
 int statPoints(int unspentPoints);
+int rng(int num);
 
+
+void createEnemy() {
+    string name[48] = {"Bob", "Tom", "Jerry", "Sue", "Jane", "Bill", "Jim", "Sam", "Pat", "Joe", "Nancy", "Ann", "Tim", "Rick", "Fred", "Lucy", "Maggie", "Frank", "Ted", "Kate", "Linda", "Betty", "Charlie", "Dave", "Eve", "Helen", "George", "Paul", "Chris", "Mary", "John", "Carl", "Jack", "Diane", "Steve", "Martha", "Alan", "Ruth", "Clara", "Bruce", "Ned", "Vince", "Laura", "Shirley", "Tommy", "Walt", "Ed"};
+    string enemy_type[5] = {"Elemental","Evil Knight","Witch","Wraith","Dragon"};
+    enemy_str = 1 + rng(8);
+    enemy_int = 1 + rng(8);
+    enemy_agi = 1 + rng(8);
+    enemy_char = 1 + rng(8);
+    enemy_health = 25 + rng(75);
+    int randomNumber1 = rng(47);
+    int randomNumber2 = rng(5);
+    enemy_name = name[randomNumber1] + " the " + enemy_type[randomNumber2];
+    cout << endl;
+    screenUpdate();
+}
 
 void createRoom() {
     string room_type[5] = {"Chamber","Dungeon","Cave","Mountain","Field"};
     string room_modifier[5] = {"Fire","Wind","Valor","Shadows","The Dragon"};
-    int min = 0;
-    int max = 5;
-    int randomNumberInRange1 = min + (rand() % (max - min + 1));
-    int randomNumberInRange2 = min + (rand() % (max - min + 1));
-    currentRoomName = room_type[randomNumberInRange1] + " of " + room_modifier[randomNumberInRange2];
+    int randomNumber1 = rng(5);
+    int randomNumber2 = rng(5);
+    currentRoomName = room_type[randomNumber1] + " of " + room_modifier[randomNumber2];
     cout << currentRoomName;
+    
+    roomGameplay();
+}
+
+int rng(int num) {
+    srand(time(0));
+    int rand_num = (rand() % num);
+    return rand_num;
+}
+
+void roomGameplay() {
+    createEnemy();
+    combat();
+}
+
+void combat() {
+    cout << player_name << " is fighting " << enemy_name << "!" << endl;
+    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
+    cout << "Your Health: " << player_health << " | " << "Enemy's Health: " << enemy_health << endl;
+    cout << R"(
+
+What will you do?
+    
+1. Fight
+2. Act
+3. Retreat    
+)";
+
+cout << "Enter choice: ";
+string choice = "";
+
+
+
 }
 
 
@@ -98,11 +159,11 @@ int statPoints(int unspentPoints){
 
 void gameStart() {
     cout << R"(
-     =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
                                                
-                  DUNGEON DECIDE 
+              DUNGEON DECIDE
 
-     =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     )" << endl;
     cout << endl << endl << endl;
     createCharacter();
