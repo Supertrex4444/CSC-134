@@ -33,16 +33,24 @@ class Restaurant {
         return rating;
     }
   
+
+    void printInfo() {
+
+        cout << "Restaurant Name: " << name << endl;
+        cout << "Rating: " << rating << "( (out of 5) )" << endl;
+    }
+
+
 };
+
 
 int main() {
     cout << "M7T1 - Restaurant Reviews" << endl;
 
     
     
-    Restaurant breakfast    = new Restaurant("Waffle House", 3.5);
-    Restaurant lunch        = new Restaurant("");
-
+    Restaurant breakfast    = Restaurant("Waffle House", 3.5);
+    Restaurant lunch        = Restaurant("Bojangles", 4.0);
     breakfast.printInfo();
     lunch.printInfo();
 

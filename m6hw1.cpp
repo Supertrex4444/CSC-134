@@ -48,7 +48,7 @@ int rng(int num);
 
 void createEnemy() {
     string name[48] = {"Bob", "Tom", "Jerry", "Sue", "Jane", "Bill", "Jim", "Sam", "Pat", "Joe", "Nancy", "Ann", "Tim", "Rick", "Fred", "Lucy", "Maggie", "Frank", "Ted", "Kate", "Linda", "Betty", "Charlie", "Dave", "Eve", "Helen", "George", "Paul", "Chris", "Mary", "John", "Carl", "Jack", "Diane", "Steve", "Martha", "Alan", "Ruth", "Clara", "Bruce", "Ned", "Vince", "Laura", "Shirley", "Tommy", "Walt", "Ed"};
-    string enemy_type[5] = {"Elemental","Evil Knight","Witch","Wraith","Dragon"};
+    string enemy_type[71] = {"Goblin", "Orc", "Skeleton", "Troll", "Bandit", "Necromancer", "Wraith", "Ghoul", "Warlock", "Dark Elf", "Spider", "Vampire", "Werewolf", "Zombie", "Shade", "Harpy", "Dragon", "Lich", "Giant", "Cyclops", "Basilisk", "Hydra", "Manticore", "Gorgon", "Imp", "Demon", "Succubus", "Banshee", "Kobold", "Slime", "Beastman", "Minotaur", "Wyvern", "Chimera", "Elemental", "Sorcerer", "Witch", "Hellhound", "Djinn", "Serpent", "Scorpion", "Worm", "Barbarian", "Pirate", "Assassin", "Thief", "Mummy", "Phantom", "Yeti", "Ice Wraith", "Sea Serpent", "Ooze", "Construct", "Golem", "Ettin", "Dryad", "Faerie", "Gremlin", "Siren", "Shadecaller", "Plague Rat", "Cursed Knight", "Bone Archer", "Shadow Stalker", "Death Hound", "Fire Drake", "Frost Giant", "Lava Spirit", "Forest Spirit", "Sky Serpent", "Nightmare"};
     enemy_str = 1 + rng(8);
     enemy_int = 1 + rng(8);
     enemy_agi = 1 + rng(8);
@@ -56,7 +56,7 @@ void createEnemy() {
     enemy_health = 25 + rng(75);
     initial_enemy_health = enemy_health;
     int randomNumber1 = rng(47);
-    int randomNumber2 = rng(5);
+    int randomNumber2 = rng(70);
     enemy_name = name[randomNumber1] + " the " + enemy_type[randomNumber2];
     cout << endl;
 }
@@ -110,7 +110,7 @@ void roomGameplay() {
 
 void gameover() {
     cout << endl << endl;
-    cout << player_name << " had died!" << endl;
+    cout << player_name << " died!" << endl;
     cout << R"(
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
                                                
@@ -177,25 +177,55 @@ What will you do?
 
 What act will you do?
     
-1. Talk 
-2. Recruit 
+1. Talk (charisma/30 chance of success)
+2. Recruit (charisma/100 chance of success)
 )" << endl;
-        string choice2 = "";
-        cin >> choice2;
-        while (choice2 != "1" && choice2 != "2") {
-            cout << "TRY AGAIN, Enter Choice: ";
-            cin >> choice;
-        }
-
+            string choice2 = "";
+            cout << "Enter choice: ";
+            cin >> choice2;
+            while (choice2 != "1" && choice2 != "2") {
+                cout << "TRY AGAIN, Enter Choice: ";
+                cin >> choice;
+            }
+            if (choice2 == "1") {
+                cout << player_name << " attempts to talk " << enemy_name << " out of fighting..." << endl; 
+                if (rng(30) <= player_char) {
+                    cout << enemy_name << " accepted the peace offering!" << endl;
+                    return;
+                }
+                else{
+                    cout << enemy_name << " has rejected the peace offering!" << endl;
+                }
+            }
+            if (choice2 == "2") {
+                cout << player_name << " attempts to recruit " << enemy_name << " to their team..." << endl; 
+                if (rng(100) <= player_char) {
+                    cout << enemy_name << " joins your team!" << endl;
+                    player_name = player_name + " and " + enemy_name;
+                    return;
+                }
+                else{
+                    cout << enemy_name << " refuses to join your team!" << endl;
+                }
+            }
         }
         cout << endl << endl;
+
+        if (choice == "3") {
+            enemy_damage = 5 + rng(5);
+            cout << enemy_name << " deals " << enemy_damage << " damage to you!";
+            player_health = player_health - enemy_damage;
+            cout << endl << endl;
+            cout << player_name << " runs away!" << endl;
+            return;
+        }
 
         if (enemy_health > 0) {
             enemy_damage = 5 + rng(5);
             cout << enemy_name << " deals " << enemy_damage << " damage to you!";
             player_health = player_health - enemy_damage;
         }
-        
+
         else{
             screenUpdate();
             cout << enemy_name << " has been defeated!" << endl;
