@@ -59,7 +59,6 @@ void createEnemy() {
     int randomNumber2 = rng(5);
     enemy_name = name[randomNumber1] + " the " + enemy_type[randomNumber2];
     cout << endl;
-    screenUpdate();
 }
 
 void createRoom() {
@@ -86,16 +85,25 @@ void roomGameplay() {
     if (player_health > 0) {
         cout << currentRoomName << " has been cleared!" << endl;
         characterProfile();
-        cout << "Type '1' to enter the next room" << endl << endl;
+        cout << "1. Enter the next room" << endl << "2. Restore HP (Costs XP)" << endl;
         string choice = "";
         cin >> choice;
-
-        while (choice != "1") {
+        screenUpdate();
+        while (choice != "1" && choice != "2") {
             cout << "TRY AGAIN, Enter Choice: ";
             cin >> choice;
         }
         if (choice == "1") {
             createRoom();
+        }
+        if (choice == "2") {
+            cout << "You restored " << player_xp << " health!" << endl;
+            player_health = player_health + player_xp;
+            if (player_health > 100) {
+                player_health = 100;
+            }
+            cout << "Current HP: " << player_health << endl;
+            player_xp = 0;
         }
     }
 }
@@ -212,6 +220,7 @@ void createCharacter() {
     if (choice == "1") {
         cout << "The game has started" << endl;
         while (player_health > 0){
+            screenUpdate();
             createRoom();
         }
         if (player_health <= 0) {
@@ -223,7 +232,7 @@ void createCharacter() {
 void characterProfile(){
     cout << "             Character Profile" << endl;
     cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
-    cout << "Name: " << player_name << endl << "Strength: (" << player_str << ")" << endl << "Intelligence: (" << player_int << ")" << endl << "Agility: (" << player_agi << ")" << endl << "Charisma: (" << player_char << ")" << endl;
+    cout << "Name: " << player_name << endl << "Health: " << player_health << endl << "Strength: (" << player_str << ")" << endl << "Intelligence: (" << player_int << ")" << endl << "Agility: (" << player_agi << ")" << endl << "Charisma: (" << player_char << ")" << endl;
     cout << "Level: " << player_level << endl << "XP: " << player_xp << "/100" << endl;
     cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
     cout << endl;
