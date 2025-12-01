@@ -67,7 +67,7 @@ void createRoom() {
     int randomNumber1 = rng(5);
     int randomNumber2 = rng(5);
     currentRoomName = room_type[randomNumber1] + " of " + room_modifier[randomNumber2];
-    cout << currentRoomName;
+    //cout << currentRoomName;
     
     roomGameplay();
 }
@@ -171,6 +171,22 @@ What will you do?
                 
             }
             enemy_health = enemy_health - damage_dealt;
+        }
+        if (choice == "2") {
+            cout << R"(
+
+What act will you do?
+    
+1. Talk 
+2. Recruit 
+)" << endl;
+        string choice2 = "";
+        cin >> choice2;
+        while (choice2 != "1" && choice2 != "2") {
+            cout << "TRY AGAIN, Enter Choice: ";
+            cin >> choice;
+        }
+
         }
         cout << endl << endl;
 
