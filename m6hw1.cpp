@@ -155,12 +155,12 @@ What will you do?
             }
             //if intelligence is greatest
             if (player_int > player_agi && player_int > player_str && player_int > player_char) {
-                damage_dealt = player_int + rng(6);
+                damage_dealt = player_int + rng(3);
                 cout << player_name << " casts a frostbolt at " << enemy_name <<  ", dealing " << damage_dealt << " damage!";
             }
             //if agility is greatest
             if (player_agi > player_str && player_agi > player_int && player_agi > player_char) {
-                damage_dealt = player_agi + rng(4);
+                damage_dealt = player_agi + rng(6);
                 cout << player_name << " preforms a swift attack to " << enemy_name <<  ", dealing " << damage_dealt << " damage!";
                 
             }
@@ -179,11 +179,12 @@ What act will you do?
     
 1. Talk (charisma/30 chance of success)
 2. Recruit (charisma/100 chance of success)
+3. Heal (intelligence/20 chance of healing for intelligence)
 )" << endl;
             string choice2 = "";
             cout << "Enter choice: ";
             cin >> choice2;
-            while (choice2 != "1" && choice2 != "2") {
+            while (choice2 != "1" && choice2 != "2" && choice2 != "3") {
                 cout << "TRY AGAIN, Enter Choice: ";
                 cin >> choice;
             }
@@ -208,6 +209,16 @@ What act will you do?
                     cout << enemy_name << " refuses to join your team!" << endl;
                 }
             }
+            if (choice2 == "3") {
+                cout << player_name << " attempts to heal..." << endl; 
+                if (rng(20) <= player_int) {
+                    cout << player_name << " has healed " << player_int + 5 << " health!" << endl;
+                    player_health = player_health + player_int + 5;
+                }
+                else{
+                    cout << enemy_name << " interupted your healing spell!" << endl;
+                }
+            }
         }
         cout << endl << endl;
 
@@ -221,9 +232,14 @@ What act will you do?
         }
 
         if (enemy_health > 0) {
+            if (rng(100) > player_agi) {
             enemy_damage = 5 + rng(5);
             cout << enemy_name << " deals " << enemy_damage << " damage to you!";
             player_health = player_health - enemy_damage;
+            }
+            else{
+                 cout << player_name << " dodged " << enemy_name << "'s attack!";
+            }
         }
 
         else{
