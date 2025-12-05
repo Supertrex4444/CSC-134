@@ -1,0 +1,396 @@
+/*
+CSC 134
+FinalProject - Dungeon Decide
+Travis Cayton
+12/05/25
+(if player name = test, they will start with 50 extra stats)
+*/
+
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+
+string player_name = "NAME";
+int player_str = 1;
+int player_int = 1;
+int player_agi = 1;
+int player_char = 1;
+int player_health = 100;
+int player_xp = 0;
+int player_level = 1;
+string enemy_name = "NAME";
+int enemy_str = 1;
+int enemy_int = 1;
+int enemy_agi = 1;
+int enemy_char = 1;
+int enemy_health = 100;
+int initial_enemy_health = 0;
+string currentRoomName = "";
+
+
+
+
+void createCharacter();
+void gameStart();
+void screenUpdate();
+void characterProfile();
+void createRoom();
+void createEnemy();
+void roomGameplay();
+void combat();
+void gameover();
+int statPoints(int unspentPoints);
+int rng(int num);
+
+
+void createEnemy() {
+    string name[48] = {"Bob", "Tom", "Jerry", "Sue", "Jane", "Bill", "Jim", "Sam", "Pat", "Joe", "Nancy", "Ann", "Tim", "Rick", "Fred", "Lucy", "Maggie", "Frank", "Ted", "Kate", "Linda", "Betty", "Charlie", "Dave", "Eve", "Helen", "George", "Paul", "Chris", "Mary", "John", "Carl", "Jack", "Diane", "Steve", "Martha", "Alan", "Ruth", "Clara", "Bruce", "Ned", "Vince", "Laura", "Shirley", "Tommy", "Walt", "Ed"};
+    string enemy_type[71] = {"Goblin", "Orc", "Skeleton", "Troll", "Bandit", "Necromancer", "Wraith", "Ghoul", "Warlock", "Dark Elf", "Spider", "Vampire", "Werewolf", "Zombie", "Shade", "Harpy", "Dragon", "Lich", "Giant", "Cyclops", "Basilisk", "Hydra", "Manticore", "Gorgon", "Imp", "Demon", "Succubus", "Banshee", "Kobold", "Slime", "Beastman", "Minotaur", "Wyvern", "Chimera", "Elemental", "Sorcerer", "Witch", "Hellhound", "Djinn", "Serpent", "Scorpion", "Worm", "Barbarian", "Pirate", "Assassin", "Thief", "Mummy", "Phantom", "Yeti", "Ice Wraith", "Sea Serpent", "Ooze", "Construct", "Golem", "Ettin", "Dryad", "Faerie", "Gremlin", "Siren", "Shadecaller", "Plague Rat", "Cursed Knight", "Bone Archer", "Shadow Stalker", "Death Hound", "Fire Drake", "Frost Giant", "Lava Spirit", "Forest Spirit", "Sky Serpent", "Nightmare"};
+    enemy_str = 1 + rng(8);
+    enemy_int = 1 + rng(8);
+    enemy_agi = 1 + rng(8);
+    enemy_char = 1 + rng(8);
+    enemy_health = 25 + rng(75);
+    initial_enemy_health = enemy_health;
+    int randomNumber1 = rng(47);
+    int randomNumber2 = rng(70);
+    enemy_name = name[randomNumber1] + " the " + enemy_type[randomNumber2];
+    cout << endl;
+}
+
+void createRoom() {
+    string room_type[5] = {"Chamber","Dungeon","Cave","Mountain","Field"};
+    string room_modifier[5] = {"Fire","Wind","Valor","Shadows","The Dragon"};
+    int randomNumber1 = rng(5);
+    int randomNumber2 = rng(5);
+    currentRoomName = room_type[randomNumber1] + " of " + room_modifier[randomNumber2];
+    //cout << currentRoomName;
+    
+    roomGameplay();
+}
+
+int rng(int num) {
+    srand(time(0));
+    int rand_num = (rand() % num);
+    return rand_num;
+}
+
+void roomGameplay() {
+    createEnemy();
+    cout << player_name << " encounters " << enemy_name << " in The " << currentRoomName << endl << endl;
+    combat();
+    if (player_health > 0) {
+        cout << currentRoomName << " has been cleared!" << endl;
+        characterProfile();
+        cout << "1. Enter the next room" << endl << "2. Restore HP (Costs XP)" << endl;
+        string choice = "";
+        cin >> choice;
+        screenUpdate();
+        while (choice != "1" && choice != "2") {
+            cout << "TRY AGAIN, Enter Choice: ";
+            cin >> choice;
+        }
+        if (choice == "1") {
+            createRoom();
+        }
+        if (choice == "2") {
+            cout << "You restored " << player_xp << " health!" << endl;
+            player_health = player_health + player_xp;
+            if (player_health > 100) {
+                player_health = 100;
+            }
+            cout << "Current HP: " << player_health << endl;
+            player_xp = 0;
+        }
+    }
+}
+
+void gameover() {
+    cout << endl << endl;
+    cout << player_name << " died!" << endl;
+    cout << R"(
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                                               
+               GAME OVER
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    )" << endl;
+}
+
+void combat() {
+    while (enemy_health > 0 && player_health > 0){
+        
+        int damage_dealt = 0;
+        int enemy_damage = 0;
+        cout << player_name << " is fighting " << enemy_name << "!" << endl;
+        cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
+        cout << "Your Health: " << player_health << " | " << "Enemy's Health: " << enemy_health << endl;
+        cout << R"(
+        
+
+What will you do?
+    
+1. Fight
+2. Act
+3. Retreat
+)";
+
+        cout << "Enter choice: ";
+        string choice = "";
+        cin >> choice;
+        while (choice != "1" && choice != "2" && choice != "3") {
+            cout << "TRY AGAIN, Enter Choice: ";
+            cin >> choice;
+        }
+        screenUpdate();
+        if (choice == "1") {
+            damage_dealt = player_str;
+            //if strength is greatest
+            if (player_str > player_agi && player_str > player_int && player_str > player_char) {
+                damage_dealt = player_str + rng(8);
+                cout << player_name << " strikes " << enemy_name <<  " powerfully with their weapon, dealing " << damage_dealt << " damage!";
+            }
+            //if intelligence is greatest
+            if (player_int > player_agi && player_int > player_str && player_int > player_char) {
+                damage_dealt = player_int + rng(3);
+                cout << player_name << " casts a frostbolt at " << enemy_name <<  ", dealing " << damage_dealt << " damage!";
+            }
+            //if agility is greatest
+            if (player_agi > player_str && player_agi > player_int && player_agi > player_char) {
+                damage_dealt = player_agi + rng(6);
+                cout << player_name << " preforms a swift attack to " << enemy_name <<  ", dealing " << damage_dealt << " damage!";
+                
+            }
+            //if charisma is greatest
+            if (player_char > player_str && player_char > player_int && player_char > player_agi) {
+                damage_dealt = player_char + rng(2);
+                cout << player_name << " insults " << enemy_name <<  ", dealing " << damage_dealt << " emotional damage!";
+                
+            }
+            enemy_health = enemy_health - damage_dealt;
+        }
+        if (choice == "2") {
+            cout << R"(
+
+What act will you do?
+    
+1. Talk (charisma/30 chance of success)
+2. Recruit (charisma/100 chance of success)
+3. Heal (intelligence/20 chance of healing for intelligence)
+)" << endl;
+            string choice2 = "";
+            cout << "Enter choice: ";
+            cin >> choice2;
+            while (choice2 != "1" && choice2 != "2" && choice2 != "3") {
+                cout << "TRY AGAIN, Enter Choice: ";
+                cin >> choice;
+            }
+            if (choice2 == "1") {
+                cout << player_name << " attempts to talk " << enemy_name << " out of fighting..." << endl; 
+                if (rng(30) <= player_char) {
+                    cout << enemy_name << " accepted the peace offering!" << endl;
+                    return;
+                }
+                else{
+                    cout << enemy_name << " has rejected the peace offering!" << endl;
+                }
+            }
+            if (choice2 == "2") {
+                cout << player_name << " attempts to recruit " << enemy_name << " to their team..." << endl; 
+                if (rng(100) <= player_char) {
+                    cout << enemy_name << " joins your team!" << endl;
+                    player_name = player_name + " and " + enemy_name;
+                    player_health = player_health + 30;
+                    player_str = player_str + 1;
+                    player_int = player_int + 1;
+                    player_agi = player_agi + 1;
+                    player_char = player_char + 1;
+                    return;
+                }
+                else{
+                    cout << enemy_name << " refuses to join your team!" << endl;
+                }
+            }
+            if (choice2 == "3") {
+                cout << player_name << " attempts to heal..." << endl; 
+                if (rng(20) <= player_int) {
+                    cout << player_name << " has healed " << player_int + 5 << " health!" << endl;
+                    player_health = player_health + player_int + 5;
+                }
+                else{
+                    cout << enemy_name << " interupted your healing spell!" << endl;
+                }
+            }
+        }
+        cout << endl << endl;
+
+        if (choice == "3") {
+            enemy_damage = 5 + rng(5);
+            cout << enemy_name << " deals " << enemy_damage << " damage to you!";
+            player_health = player_health - enemy_damage;
+            cout << endl << endl;
+            cout << player_name << " runs away!" << endl;
+            return;
+        }
+
+        if (enemy_health > 0) {
+            if (rng(100) > player_agi) {
+            enemy_damage = 5 + rng(5);
+            cout << enemy_name << " deals " << enemy_damage << " damage to you!";
+            player_health = player_health - enemy_damage;
+            }
+            else{
+                 cout << player_name << " dodged " << enemy_name << "'s attack!";
+            }
+        }
+
+        else{
+            screenUpdate();
+            cout << enemy_name << " has been defeated!" << endl;
+            player_xp = player_xp + initial_enemy_health;
+            cout << "You gained " << player_xp << " XP!" << endl;
+            if (player_xp >= 100) {
+                player_level = player_level + 1;
+                player_health = player_health + 30;
+                cout << player_name << " has reached level " << player_level << "!" << endl << endl;
+                statPoints(2);
+                player_xp = 0;
+            }
+        }
+        
+        
+        cout << endl << endl;
+    }
+}
+
+
+void createCharacter() {
+    cout << "-CHARACTER CREATOR-" << endl; 
+    cout << endl;
+    cout << "Enter character name: ";
+    cin >> player_name;
+    if (player_name == "test") {
+        player_str = player_str + 50; 
+        player_int = player_int + 50; 
+        player_agi = player_agi + 50; 
+        player_char = player_char + 50; 
+    }
+    screenUpdate();
+    statPoints(5);
+    screenUpdate();
+    characterProfile();
+    cout << "Type '1' to start game" << endl << endl;
+    string choice = "";
+    cin >> choice;
+
+    while (choice != "1") {
+        cout << "TRY AGAIN, Enter Choice: ";
+        cin >> choice;
+    }
+    if (choice == "1") {
+        cout << "The game has started" << endl;
+        while (player_health > 0){
+            screenUpdate();
+            createRoom();
+        }
+        if (player_health <= 0) {
+            gameover();
+        }
+    }
+}
+
+void characterProfile(){
+    cout << "             Character Profile" << endl;
+    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
+    cout << "Name: " << player_name << endl << "Health: " << player_health << endl << "Strength: (" << player_str << ")" << endl << "Intelligence: (" << player_int << ")" << endl << "Agility: (" << player_agi << ")" << endl << "Charisma: (" << player_char << ")" << endl;
+    cout << "Level: " << player_level << endl << "XP: " << player_xp << "/100" << endl;
+    cout << "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" << endl;
+    cout << endl;
+    cout << endl;
+}
+
+int statPoints(int unspentPoints){
+    while (unspentPoints > 0) {
+        cout << "You have " << unspentPoints << " unspent stat points." << endl << "1 -> Strength(" << player_str << ")" << endl << "2 -> Intelligence(" << player_int << ")" << endl << "3 -> Agility(" << player_agi << ")" << endl << "4 -> Charisma(" << player_char << ")" << endl;
+        cout << endl;
+        string choice = "";
+        cout << "Enter Choice: ";
+        cin >> choice;
+        while (choice != "1" && choice != "2" && choice != "3" && choice != "4" ) {
+            cout << "TRY AGAIN, Enter Choice: ";
+            cin >> choice;
+        }
+        if (choice == "1") {
+            player_str = player_str + 1;
+            unspentPoints = unspentPoints - 1;
+        }
+        if (choice == "2") {
+            player_int = player_int + 1;
+            unspentPoints = unspentPoints - 1;
+        }
+        if (choice == "3") {
+            player_agi = player_agi + 1;
+            unspentPoints = unspentPoints - 1;
+        }
+        if (choice == "4") {
+            player_char = player_char + 1;
+            unspentPoints = unspentPoints - 1;
+        }
+        screenUpdate();
+    }
+    return 0;
+}
+
+void gameStart() {
+    cout << R"(
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                                               
+              DUNGEON DECIDE
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    )" << endl;
+    cout << endl << endl << endl;
+    createCharacter();
+}
+
+
+void screenUpdate() {
+    cout << R"(
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    )" << endl;
+}
+
+int main() {
+    gameStart();
+}
